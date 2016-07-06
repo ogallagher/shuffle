@@ -151,6 +151,14 @@ function draw() {
             escape();
             
             break;
+        case 5:
+            background(80);
+            
+            board.enable();
+            board.display();
+            self.display();
+            end();
+            escape();
     }
 }
 
@@ -512,7 +520,13 @@ function end() {
     noStroke();
     fill(255,80);
     translate(width/2,height/2);
-    var endText = "You won the game!";
+    var endText = "";
+    if (stage == 4) {
+        endText = "You won the game!";
+    }
+    else if (stage == 5) {
+        endText = "Game Over... 4 U.";
+    }
     textFont("Lucida Console");
     textSize(32*scale);
     
@@ -713,23 +727,28 @@ function onLeave(response) {
                 }
             }
             
-            chosenSize = 0;
-            chosenGame = 0;
-            escaping = false;
-            joining = false;
-            gamingSize = false;
-            gamingExisting = false;
-            waitingToPlay = false;
-            stage = 0;
-            self.name = "";
-            self.pieces = [];
-            windowResized();
-            scroll = 0;
-            game = -1;
-            others = [];
-            turn = 0;
-            for (var i=buttons.length-1; i>6; i--) {
-                buttons.splice(i,1);
+            if (response.reason == 0) {
+                chosenSize = 0;
+                chosenGame = 0;
+                escaping = false;
+                joining = false;
+                gamingSize = false;
+                gamingExisting = false;
+                waitingToPlay = false;
+                stage = 0;
+                self.name = "";
+                self.pieces = [];
+                windowResized();
+                scroll = 0;
+                game = -1;
+                others = [];
+                turn = 0;
+                for (var i=buttons.length-1; i>6; i--) {
+                    buttons.splice(i,1);
+                }
+            }
+            else {
+                stage = 5;
             }
         }
         else if (response.game == game) {

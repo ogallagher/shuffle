@@ -353,7 +353,7 @@ function communicate(connection) {
                     inGame = true;
                 }
                 else {
-                    games[gameIndex].players[p].age++;
+                    games[gameIndex].players[p].age += 1/games[gameIndex].players.length;
                 }
             }
             
@@ -377,9 +377,7 @@ function communicate(connection) {
         }
         
         for (var i=0; i<games.length; i++) {
-            //if (!games[i].full) {
-                games[i].age++;
-            //}
+            games[i].age++;
             
             if ((games[i].players.length == 1 && games[i].players[0].age > 600) || games[i].age > 700) {
                 console.log("Game " + games[i].address + " turned stale.");
@@ -568,7 +566,7 @@ function Game(siz) {
 function Player(add,nam) {
     this.address = add;
     this.name = nam;
-    this.age = 0;
+    this.age = 0.0;
     this.ready = false;
     this.pieces = [];
     

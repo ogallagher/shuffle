@@ -98,6 +98,22 @@ function draw() {
         case 0:   //Not activated (smaller version)
             background(80);
             
+            push();
+            noStroke();
+            fill(255,80);
+            translate(width/2,height/2);
+            var title = "Play";
+            textFont("Lucida Console");
+            textSize(48);
+            
+            rectMode(CENTER);
+            rect(0,0,width-10,height-10,7);
+            
+            textAlign(CENTER);
+            fill(0);
+            text(title,0,15);
+            pop();
+            
             break;
         case 1:    //Pick name
             background(40);
@@ -608,7 +624,9 @@ function onUpdate(games) {
         
         for (var i=0; i<existingGames.length; i++) {
             var y = str(132 + (i*37));
-            buttons.push(new Button("-40",y,30,"-8,0;0,-8;8,0;0,8"));
+            if (!existingGames[i].full) {
+                buttons.push(new Button("-40",y,30,"-8,0;0,-8;8,0;0,8"));
+            }
             
             for (var p=0; p<existingGames[i].players.length; p++) {
                 if (existingGames[i].players[p].address == self.address && !waitingToPlay) {
@@ -1837,7 +1855,7 @@ function mouseReleased() {
             document.getElementById("shuffle").style.height = "90%";
             resizeCanvas(windowWidth*0.9, windowHeight*0.9);
             
-            window.scrollTo(0,1000);
+            window.scrollTo(0,3000);
             
             stage = 1;
         }
@@ -1850,7 +1868,7 @@ function windowResized() {
         document.getElementById("shuffle").style.height = "90%";
         resizeCanvas(windowWidth*0.9, windowHeight*0.9);
         
-        window.scrollTo(0,1000);
+        window.scrollTo(0,3000);
     }
     else {
         document.getElementById("shuffle").style.width = "200px";
@@ -1861,9 +1879,9 @@ function windowResized() {
 
 function over() {
     if (stage == 0) {
-        document.getElementById("shuffle").style.width = "250px";
-        document.getElementById("shuffle").style.height = "250px";
-        resizeCanvas(250,250);
+        document.getElementById("shuffle").style.width = "400px";
+        document.getElementById("shuffle").style.height = "200px";
+        resizeCanvas(400,200);
     }
 }
 

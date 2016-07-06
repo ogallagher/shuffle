@@ -13,16 +13,114 @@
 </head>
 
 <body>
+    <hr>
+    
     <h1>Shuffle</h1>
     
-    <div id="subtitle">Author: Owen Gallagher</div>
+    <div id="subtitle">
+        Author: Owen Gallagher
+    </div>
     
     <hr>
     
-    <div id="subtitle">
-        This will be the description.
-        I haven't yet decided whether I want to have a separator after this, though. I'm sure you know what that's like.
+    <h2>Description</h2>
+    <div id="text">
+        Shuffle is an original online strategy board game.
     </div>
+    <div id="text">
+        It requires skill, foresight, patience, and focus.
+    </div>
+    <div id="text">
+        Size: 2 to 4 players.
+    </div>
+    
+    <h2>Rules</h2>
+    <div id="text">
+        Each player is given 6 pieces at random locations on the board.
+    </div>
+    <div id="text">
+        Every piece can move one space at a time, in directions that vary based on piece type.
+    </div>
+    <div id="text">
+        The six types are as follows, with the piece's movement paired with its name:
+    </div>
+    
+    <div id="subtitle">
+        CIRCLE: anywhere
+        <div id="piece"><img src="circle.png" alt="o" /></div>
+        SQUARE: cardinal
+        <div id="piece"><img src="square.png" alt="#" /></div>
+        TRIANGLE: diagonal
+        <div id="piece"><img src="triangle.png" alt="∆" /></div>
+        STAR: anywhere
+        <div id="piece"><img src="*.png" alt="*" /></div>
+        PLUS: cardinal
+        <div id="piece"><img src="+.png" alt="+" /></div>
+        EX: diagonal
+        <div id="piece"><img src="x.png" alt="x" /></div>
+    </div>
+    <div id="text">
+        On a turn, EVERY player moves ALL the pieces on its team.
+    </div>
+    <div id="text">
+        Since all pieces move at the same time, there are collisions, and what happens therefore is determined by the involved pieces' types.
+    </div>
+    <div id="text">
+        The upper three pieces are block pieces, and the lower three are attack pieces. The pieces are listed above in order from fastest to slowest (weakest to strongest).
+    </div>
+    <div id="text">
+        The following describe collision scenarios:
+    </div>
+    <div id="list">
+        BLOCK: block[A]-attack[B] = B is sent back
+    </div>
+    <div id="list">
+        SHOVE: block[A]-block[B] = if A is slower, B is shoved. Otherwise, A is shoved
+    </div>
+    <div id="list">
+        TAKE: attack[A]-attack[B] = if A is slower, B is removed. Otherwise, A is removed
+    </div>
+    <div id="list">
+        STICK: same[A]-same[B] = if A and B are the same type, both are sent back
+    </div>
+    <div id="list">
+        SQUASH: any[A]-any[B] = if in one of the collisions above, A is sent to a space occupied by another piece B, A is removed.
+    </div>
+    
+    <h2>End</h2>
+    <div id="text">
+        Players are eliminated when they have less than 4 pieces remaining.
+    </div>
+    <div id="text">
+        The game is over when all but one player is eliminated.
+    </div>
+    
+    <hr>
+    
+    <h2>Start</h2>
+    <div id="text">
+        Click on the game below to initiate it.
+    </div>
+    <div id="text">
+        You will be prompted to give a name for yourself. Click on ENTER NAME and do so; then press the play button.
+    </div>
+    <div id="text">
+        Next, either choose an existing game (diamond buttons on the right) or a preferred game size (the numbers at the bottom).
+    </div>
+    <div id="text">
+        When the game starts, the board is shown. Your pieces are red.
+    </div>
+    <div id="text">
+        Pick where you want them to move by clicking them. When you've finished, press the play button at the upper right corner.
+    </div>
+    <div id="text">
+        When all players are done, the turn will be realized, and you will be able to move your pieces again when all players have seen the turn.
+    </div>
+    <div id="text">
+        If you need to quit at any time, press the stop button in the lower right corner.
+    </div>
+    
+    <hr>
     
     <div id="shuffle"></div>
 </body>

@@ -278,7 +278,12 @@ function pickGame() {
         for (var s=0; s < 13-existingGames[i].players[0].name.length; s++) {
             gamesList += " ";
         }
-        gamesList += "\t" + str(existingGames[i].players.length) + "/" + str(existingGames[i].size);
+        if (existingGames[i].full) {
+            gamesList += "\tFULL";
+        }
+        else {
+            gamesList += "\t" + str(existingGames[i].players.length) + "/" + str(existingGames[i].size);
+        }
         gamesList += "\n";
     }
     if (gamesList.length == 0) {
@@ -593,7 +598,9 @@ function onJoin(games) {
         }
         for (var i=0; i<existingGames.length; i++) {
             var y = str(132 + (i*37));
-            buttons.push(new Button("-40",y,30,"-8,0;0,-8;8,0;0,8"));
+            if (!existingGames[i].full) {
+                buttons.push(new Button("-40",y,30,"-8,0;0,-8;8,0;0,8"));
+            }
         }
         
         stage = 2;

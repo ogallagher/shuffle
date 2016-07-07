@@ -747,9 +747,6 @@ function onLeave(response) {
                 if (response.reason == 0) {
                     alert("You lost connection.");
                 }
-                else if (response.reason == 1) {
-                    alert("You were eliminated from the game.");
-                }
             }
             
             if (response.reason == 0) {

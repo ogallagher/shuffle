@@ -392,26 +392,26 @@ function communicate(connection) {
                     io.sockets.emit('update',games);
                 }
             }
-            else {
-                for (var p=0; p<games[i].players.length; p++) {
-                    if (games[i].players[p].age > 1200) {
-                        console.log("Player " + games[i].players[p].name + " turned stale.");
-                        
-                        var response = {
-                            game: games[i].address,
-                            address: games[i].players[p].address,
-                            reason: 0
-                        }
-                        io.sockets.emit('leave', response);
-                        
-                        if (games[i].players[p].age > 1300) {
-                            games[i].players.splice(p,1);
-                            p--;
-                            io.sockets.emit('update',games);
-                        }
-                    }
-                }
-            }
+//            else {
+//                for (var p=0; p<games[i].players.length; p++) {
+//                    if (games[i].players[p].age > 1200) {
+//                        console.log("Player " + games[i].players[p].name + " turned stale.");
+//                        
+//                        var response = {
+//                            game: games[i].address,
+//                            address: games[i].players[p].address,
+//                            reason: 0
+//                        }
+//                        io.sockets.emit('leave', response);
+//                        
+//                        if (games[i].players[p].age > 1300) {
+//                            games[i].players.splice(p,1);
+//                            p--;
+//                            io.sockets.emit('update',games);
+//                        }
+//                    }
+//                }
+//            }
         }
     }
 }

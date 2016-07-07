@@ -36,7 +36,7 @@ function setup() {                  //put all client responses in setup()
     others = new Array(0);
     board = new Board();
     buttons = new Array(0);
-    buttons.push(new Button("-40","-40",50,"-10,-10;10,-10;10,10;-10,10")); //Escape
+    buttons.push(new Button("-60","-60",65,"-15,-15;15,-15;15,15;-15,15")); //Escape
     buttons.push(new Button("50","-50",60,"-15,-12;-15,-18;15,-18;15,3;-9,3;-9,12;15,12;15,18;-15,18;-15,-3;9,-3;9,-12")); //2 player
     buttons.push(new Button("130","-50",60,"-15,-12;-15,-18;15,-18;15,18;-15,18;-15,12;9,12;9,3;-3,3;-3,-3;9,-3;9,-12")); //3 player
     buttons.push(new Button("210","-50",60,"-15,-18;-9,-18;-9,-3;9,-3;9,-18;15,-18;15,18;9,18;9,3;-15,3")); //4 player
@@ -58,7 +58,6 @@ function setup() {                  //put all client responses in setup()
         addressString += digit;
     }
     self.address = int(addressString);
-    alert("Your address: " + addressString);
     self.team = [100,0,0];
     
     //client = io.connect('74.71.101.15:8080');                     //Local ip on LAN over home router
@@ -304,12 +303,14 @@ function pickGame() {
     pop();
     
     for (var i=7+scroll; i<buttons.length && i<scroll+amountVisible+7; i++) {   //Game selection buttons
-        var x = buttons[i].anchor[0];
-        var y = str(132 + ((i-7-scroll)*37));
-        
-        buttons[i].position(x,y);
-        buttons[i].enable();
-        buttons[i].display();
+        if (!existingGames[i-7-scroll].full) {
+            var x = buttons[i].anchor[0];
+            var y = str(132 + ((i-7-scroll)*37));
+            
+            buttons[i].position(x,y);
+            buttons[i].enable();
+            buttons[i].display();
+        }
     }
     
     for (var b=5; b<7; b++) {   //Scroll up and down
@@ -589,8 +590,6 @@ function onName(response) {
 
 function onJoin(games) {
     if (joining) {
-        alert("You are now a known player.");
-        
         existingGames = games;
         
         for (var i=buttons.length-1; i>6; i--) {
@@ -598,9 +597,7 @@ function onJoin(games) {
         }
         for (var i=0; i<existingGames.length; i++) {
             var y = str(132 + (i*37));
-            if (!existingGames[i].full) {
-                buttons.push(new Button("-40",y,30,"-8,0;0,-8;8,0;0,8"));
-            }
+            buttons.push(new Button("-40",y,30,"-8,0;0,-8;8,0;0,8"));
         }
         
         stage = 2;
@@ -619,10 +616,6 @@ function onUpdate(games) {
             scroll = 0;
         }
         
-        var showAlert = false;
-        if (!waitingToPlay) {
-            showAlert = true;
-        }
         waitingToPlay = false;
         
         for (var i=buttons.length-1; i>6; i--) {
@@ -631,9 +624,7 @@ function onUpdate(games) {
         
         for (var i=0; i<existingGames.length; i++) {
             var y = str(132 + (i*37));
-            if (!existingGames[i].full) {
-                buttons.push(new Button("-40",y,30,"-8,0;0,-8;8,0;0,8"));
-            }
+            buttons.push(new Button("-40",y,30,"-8,0;0,-8;8,0;0,8"));
             
             for (var p=0; p<existingGames[i].players.length; p++) {
                 if (existingGames[i].players[p].address == self.address && !waitingToPlay) {
@@ -642,10 +633,6 @@ function onUpdate(games) {
                     gamingSize = false;
                     gamingExisting = false;
                     waitingToPlay = true;
-                    
-                    if (showAlert) {
-                        //alert("You joined a game! Now to wait for the game to fill...");
-                    }
                 }
             }
         }
@@ -665,8 +652,6 @@ function onGame(response) {
                 for (var p=0; p<response.players[i].pieces.length; p++) {
                     self.pieces.push(new Piece(response.players[i].pieces[p].location,response.players[i].pieces[p].block,response.players[i].pieces[p].diagonal,response.players[i].pieces[p].cardinal));
                 }
-                
-                //alert("You are now playing. :)");
             }
             else {
                 others.push(new Player());
@@ -777,7 +762,7 @@ function onLeave(response) {
             for (var i=0; i<others.length; i++) {
                 if (response.address == others[i].address) {
                     if (response.reason == 0) {
-                        alert("Another player lost connection.");
+                        alert("Another player either lost connection or left.");
                     }
                     else if (response.reason == 1) {
                         alert("Another player was eliminated.");
@@ -1924,7 +1909,7 @@ function touchEnded() {
             document.getElementById("shuffle").style.height = "90%";
             resizeCanvas(windowWidth*0.9, windowHeight*0.9);
             
-            window.scrollTo(0,1000);
+            window.scrollTo(0,3000);
             
             stage = 1;
         }

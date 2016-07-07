@@ -334,8 +334,6 @@ function communicate(connection) {
     }
     
     function onStay(data) {
-        //console.log("@" + data.address + " wants to stay in game " + data.game);
-        
         var gameIndex = -1;
         for (var i=0; i<games.length; i++) {
             if (games[i].address == data.game) {
@@ -396,7 +394,7 @@ function communicate(connection) {
             }
             else {
                 for (var p=0; p<games[i].players.length; p++) {
-                    if (games[i].players[p].age > 600) {
+                    if (games[i].players[p].age > 1200) {
                         console.log("Player " + games[i].players[p].name + " turned stale.");
                         
                         var response = {
@@ -406,7 +404,7 @@ function communicate(connection) {
                         }
                         io.sockets.emit('leave', response);
                         
-                        if (games[i].players[p].age > 700) {
+                        if (games[i].players[p].age > 1300) {
                             games[i].players.splice(p,1);
                             p--;
                             io.sockets.emit('update',games);

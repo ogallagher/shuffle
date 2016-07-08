@@ -60,9 +60,6 @@ function setup() {                  //put all client responses in setup()
     self.address = int(addressString);
     self.team = [0,0,100];
     
-    //client = io.connect('74.71.101.15:8080');                     //Local ip on LAN over home router
-    //client = io.connect('127.0.0.1:8080');                        //Localhost ip
-    //client = io.connect('172.20.10.2:8080');                      //Local ip on LAN over iphone hotspot
     client = io.connect('http://shuffle-ojpgapps.rhcloud.com/');    //Address on remote server
     
     client.on('address', onAddress);
@@ -1277,11 +1274,26 @@ function Player() {
                         else {
                             if (self.pieces[sp].cardinal) {
                                 if (self.pieces[sp].diagonal) {
-                                    //  *
-                                    if (!this.pieces[p].block && this.pieces[p].cardinal && this.pieces[p].diagonal) {//    stick
-                                        this.pieces[p].move[0] *= -1;
-                                        this.pieces[p].move[1] *= -1;
-                                        this.pieces[p].moved = true;
+                                    if (self.pieces[sp].captain) {
+                                        //  ©
+                                        if (!this.pieces[p].block) {
+                                            if (this.pieces[p].cardinal && this.pieces[p].diagonal) {//     stick
+                                                this.pieces[p].move[0] *= -1;
+                                                this.pieces[p].move[1] *= -1;
+                                                this.pieces[p].moved = true;
+                                            }
+                                            else {//    take
+                                                pieceTaken = true;
+                                            }
+                                        }
+                                    }
+                                    else {
+                                        //  *
+                                        if (!this.pieces[p].block && this.pieces[p].cardinal && this.pieces[p].diagonal) {//    stick
+                                            this.pieces[p].move[0] *= -1;
+                                            this.pieces[p].move[1] *= -1;
+                                            this.pieces[p].moved = true;
+                                        }
                                     }
                                 }
                                 else {
@@ -1294,7 +1306,6 @@ function Player() {
                                             this.pieces[p].move[0] *= -1;
                                             this.pieces[p].move[1] *= -1;
                                             this.pieces[p].moved = true;
-
                                         }
                                     }
                                 }
@@ -1384,11 +1395,26 @@ function Player() {
                                 else {
                                     if (others[o].pieces[op].cardinal) {
                                         if (others[o].pieces[op].diagonal) {
-                                            //  *
-                                            if (!this.pieces[p].block && this.pieces[p].cardinal && this.pieces[p].diagonal) {//    stick
-                                                this.pieces[p].move[0] *= -1;
-                                                this.pieces[p].move[1] *= -1;
-                                                this.pieces[p].moved = true;
+                                            if (others[o].pieces[op].captain) {
+                                                //  ©
+                                                if (!this.pieces[p].block) {
+                                                    if (this.pieces[p].cardinal && this.pieces[p].diagonal) {//     stick
+                                                        this.pieces[p].move[0] *= -1;
+                                                        this.pieces[p].move[1] *= -1;
+                                                        this.pieces[p].moved = true;
+                                                    }
+                                                    else {//    take
+                                                        pieceTaken = true;
+                                                    }
+                                                }
+                                            }
+                                            else {
+                                                //  *
+                                                if (!this.pieces[p].block && this.pieces[p].cardinal && this.pieces[p].diagonal) {//    stick
+                                                    this.pieces[p].move[0] *= -1;
+                                                    this.pieces[p].move[1] *= -1;
+                                                    this.pieces[p].moved = true;
+                                                }
                                             }
                                         }
                                         else {
@@ -1486,6 +1512,7 @@ function Piece(loc, typ, dia, car) {
     this.block = typ;
     this.diagonal = dia;
     this.cardinal = car;
+    this.captain = false;
     this.touched = false;
     this.canPress = true;
     this.enabled = false;
@@ -1570,11 +1597,22 @@ function Piece(loc, typ, dia, car) {
         else {
             if (this.diagonal) {
                 if (this.cardinal) {
-                    line(-0.5*diameter*0.5,0,0.5*diameter*0.5,0);
-                    line(0,-0.5*diameter*0.5,0,0.5*diameter*0.5);
-                    line(-0.5*diameter*0.35,-0.5*diameter*0.35,0.5*diameter*0.35,0.5*diameter*0.35);
-                    line(0.5*diameter*0.35,-0.5*diameter*0.35,-0.5*diameter*0.35,0.5*diameter*0.35);
-                    // *
+                    if (this.captain) {
+                        line(-0.5*diameter*0.5,0,0.5*diameter*0.5,0);
+                        line(0,-0.5*diameter*0.5,0,0.5*diameter*0.5);
+                        line(-0.5*diameter*0.35,-0.5*diameter*0.35,0.5*diameter*0.35,0.5*diameter*0.35);
+                        line(0.5*diameter*0.35,-0.5*diameter*0.35,-0.5*diameter*0.35,0.5*diameter*0.35);
+                        ellipseMode(CENTER);
+                        ellipse(0,0,diameter*0.25,diameter*0.25);
+                        // ©
+                    }
+                    else {
+                        line(-0.5*diameter*0.5,0,0.5*diameter*0.5,0);
+                        line(0,-0.5*diameter*0.5,0,0.5*diameter*0.5);
+                        line(-0.5*diameter*0.35,-0.5*diameter*0.35,0.5*diameter*0.35,0.5*diameter*0.35);
+                        line(0.5*diameter*0.35,-0.5*diameter*0.35,-0.5*diameter*0.35,0.5*diameter*0.35);
+                        // *
+                    }
                 }
                 else {
                     line(-0.5*diameter*0.35,-0.5*diameter*0.35,0.5*diameter*0.35,0.5*diameter*0.35);

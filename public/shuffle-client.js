@@ -460,11 +460,19 @@ function finish() {
             if (self.pieces[p].taken) {
                 self.pieces.splice(p,1);
             }
+            else if (self.pieces[p].upgraded) {
+                self.pieces[p].captain = true;
+                self.pieces[p].upgraded = false;
+            }
         }
         for (var o=0; o<others.length; o++) {
             for (var p=others[o].pieces.length-1; p>-1; p--) {
                 if (others[o].pieces[p].taken) {
                     others[o].pieces.splice(p,1);
+                }
+                else if (others[o].pieces[p].upgraded) {
+                    others[o].pieces[p].captain = true;
+                    others[o].pieces[p].upgraded = false;
                 }
             }
 
@@ -1200,6 +1208,7 @@ function Player() {
             for (var p=0; p<this.pieces.length; p++) {
                 if (moves[m].block == this.pieces[p].block && moves[m].diagonal == this.pieces[p].diagonal && moves[m].cardinal == this.pieces[p].cardinal) {
                     this.pieces[p].move = moves[m].move;
+                    this.pieces[p].captain = moves[m].captain;
                 }
             }
         }
@@ -1289,7 +1298,7 @@ function Player() {
                                     }
                                     else {
                                         //  *
-                                        if (!this.pieces[p].block && this.pieces[p].cardinal && this.pieces[p].diagonal) {//    stick
+                                        if (!this.pieces[p].block && this.pieces[p].cardinal && this.pieces[p].diagonal && !this.pieces[p].captain) {//    stick
                                             this.pieces[p].move[0] *= -1;
                                             this.pieces[p].move[1] *= -1;
                                             this.pieces[p].moved = true;
@@ -1299,10 +1308,10 @@ function Player() {
                                 else {
                                     //  +
                                     if (!this.pieces[p].block && this.pieces[p].cardinal) {
-                                        if (this.pieces[p].diagonal) {//    take
+                                        if (!this.pieces[p].captain && this.pieces[p].diagonal) {//    take
                                             pieceTaken = true;
                                         }
-                                        else {//    stick
+                                        else if (!this.pieces[p].diagonal) {//    stick
                                             this.pieces[p].move[0] *= -1;
                                             this.pieces[p].move[1] *= -1;
                                             this.pieces[p].moved = true;
@@ -1313,8 +1322,10 @@ function Player() {
                             else {
                                 //  x
                                 if (!this.pieces[p].block) {
-                                    if (this.pieces[p].cardinal) {//    take
-                                        pieceTaken = true;
+                                    if (this.pieces[p].cardinal) {
+                                        if (!this.pieces[p].captain) {//    take
+                                            pieceTaken = true;
+                                        }
                                     }
                                     else {//    stick
                                         this.pieces[p].move[0] *= -1;
@@ -1410,7 +1421,7 @@ function Player() {
                                             }
                                             else {
                                                 //  *
-                                                if (!this.pieces[p].block && this.pieces[p].cardinal && this.pieces[p].diagonal) {//    stick
+                                                if (!this.pieces[p].block && this.pieces[p].cardinal && this.pieces[p].diagonal && !this.pieces[p].captain) {//    stick
                                                     this.pieces[p].move[0] *= -1;
                                                     this.pieces[p].move[1] *= -1;
                                                     this.pieces[p].moved = true;
@@ -1420,10 +1431,10 @@ function Player() {
                                         else {
                                             //  +
                                             if (!this.pieces[p].block && this.pieces[p].cardinal) {
-                                                if (this.pieces[p].diagonal) {//    take
+                                                if (!this.pieces[p].captain && this.pieces[p].diagonal) {//    take
                                                     pieceTaken = true;
                                                 }
-                                                else {//    stick
+                                                else if (!this.diagonal) {//    stick
                                                     this.pieces[p].move[0] *= -1;
                                                     this.pieces[p].move[1] *= -1;
                                                     this.pieces[p].moved = true;
@@ -1436,7 +1447,9 @@ function Player() {
                                         //  x
                                         if (!this.pieces[p].block) {
                                             if (this.pieces[p].cardinal) {//    take
-                                                pieceTaken = true;
+                                                if (!this.pieces[p].captain) {
+                                                    pieceTaken = true;
+                                                }
                                             }
                                             else {//    stick
                                                 this.pieces[p].move[0] *= -1;
@@ -1485,6 +1498,27 @@ function Player() {
                         }
                     }
                 }
+                else if (!this.pieces[p].block && this.pieces[p].cardinal && this.pieces[p].diagonal) {
+                    for (var sp=0; sp<self.pieces.length; sp++) {
+                        if (player > -1 || sp != p) {
+                            if (self.pieces[sp].location.x == this.pieces[p].location.x && self.pieces[sp].location.y == this.pieces[p].location.y && self.pieces[sp].move.join() != "0,0") {
+                                this.pieces[p].upgraded = true;
+                            }
+                        }
+                    }
+                    
+                    if (!pieceTaken) {
+                        for (var o=0; o<others.length; o++) {
+                            for (var op=0; op<others[o].pieces.length; op++) {
+                                if (player != o || op != p) {
+                                    if (others[o].pieces[op].location.x == this.pieces[p].location.x && others[o].pieces[op].location.y == this.pieces[p].location.y && others[o].pieces[op].move.join() != "0,0") {
+                                        this.pieces[p].upgraded = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
             else {
                 pieceTaken = true;
@@ -1513,6 +1547,7 @@ function Piece(loc, typ, dia, car) {
     this.diagonal = dia;
     this.cardinal = car;
     this.captain = false;
+    this.upgraded = false;
     this.touched = false;
     this.canPress = true;
     this.enabled = false;

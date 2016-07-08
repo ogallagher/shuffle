@@ -70,7 +70,7 @@
         Since all pieces move at the same time, there are collisions, and what happens therefore is determined by the involved pieces' types.
     </div>
     <div id="text">
-        The upper three pieces are block pieces, and the lower three are attack pieces. The pieces are listed above in order from fastest to slowest (weakest to strongest).
+        The upper three pieces are block pieces, and the lower three are attack pieces. The pieces are listed above in order from weakest to strongest by type.
     </div>
     <div id="text">
         The following describe collision scenarios:
@@ -79,10 +79,10 @@
         <i>BLOCK:</i> block[A]-attack[B] = B is sent back.
     </div>
     <div id="list">
-        <i>SHOVE:</i>  block[A]-block[B] = if A is slower, B is shoved. Otherwise, A is shoved.
+        <i>SHOVE:</i>  block[A]-block[B] = if A is stronger, B is shoved. Otherwise, A is shoved.
     </div>
     <div id="list">
-        <i>TAKE:</i>  attack[A]-attack[B] = if A is slower, B is removed. Otherwise, A is removed.
+        <i>TAKE:</i>  attack[A]-attack[B] = if A is stronger, B is removed. Otherwise, A is removed.
     </div>
     <div id="list">
         <i>STICK:</i>  same[A]-same[B] = if A and B are the same type, both are sent back.
@@ -98,7 +98,7 @@
         <div id="piece"><img src="captain.png" alt="©" /></div>
     </div>
     <div id="text">
-        The <i>CAPTAIN</i> is the seventh piece type, which is the slowest (strongest) attack piece on the board.
+        The <i>CAPTAIN</i> is the seventh piece type, which is the strongest attack piece on the board.
     </div>
     
     <h2>End</h2>

@@ -145,6 +145,10 @@ function draw() {
                 others[i].display();
             }
             move();
+            if (turn == 1) {
+                loadingText.position();
+                loadingText.display();
+            }
             finish();
             if (!board.touched) {
                 playerText.position();
@@ -169,6 +173,20 @@ function draw() {
             board.enable();
             board.display();
             self.display();
+            for (var i=0; i<others.length; i++) {
+                others[i].display();
+            }
+            end();
+            escape();
+        case 6:
+            background(80);
+            
+            board.enable();
+            board.display();
+            self.display();
+            for (var i=0; i<others.length; i++) {
+                others[i].display();
+            }
             end();
             escape();
     }
@@ -270,7 +288,12 @@ function pickGame() {
     
     var gamesList = "";
     for (var i=scroll; i<existingGames.length && i<scroll+amountVisible; i++) {    //List of available games
-        gamesList += existingGames[i].players[0].name;
+        if (existingGames[i].players.length > 0) {
+            gamesList += existingGames[i].players[0].name;
+        }
+        else {
+            gamesList += "EMPTY GAME.";
+        }
         for (var s=0; s < 13-existingGames[i].players[0].name.length; s++) {
             gamesList += " ";
         }
@@ -554,6 +577,9 @@ function end() {
     else if (stage == 5) {
         endText = "Game Over... 4 U.";
     }
+    else if (stage == 6) {
+        endText = "Tie Game!";
+    }
     textFont("Lucida Console");
     textSize(32*scale);
     
@@ -759,8 +785,11 @@ function onLeave(response) {
                     buttons.splice(i,1);
                 }
             }
-            else {
+            else if (response.reason == 1) {
                 stage = 5;
+            }
+            else if (response.reason == 2) {
+                stage = 6;
             }
         }
         else if (response.game == game) {
@@ -986,7 +1015,7 @@ function TextInput(x,y,s) {
         textFont("Lucida Console");
         textSize(this.size*this.scale);
         
-        if (difference.x > 0 && difference.x < textWidth(this.input) && difference.y > -10*this.scale && difference.y < 10*this.scale) {
+        if (difference.x > 0 && difference.x < textWidth(this.input) && difference.y > -40*this.scale && difference.y < 10*this.scale) {
             this.touched = true;
         }
         else {
@@ -1075,7 +1104,7 @@ function TextInput(x,y,s) {
             line(0,10*this.scale,textWidth(this.input),10*this.scale);
         }
         if (this.enabled) {
-            line(textWidth(this.input),-18*this.scale,textWidth(this.input),10*this.scale);
+            line(textWidth(this.input),-40*this.scale,textWidth(this.input),10*this.scale);
         }
         
         noStroke();

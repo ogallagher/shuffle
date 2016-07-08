@@ -231,6 +231,9 @@ function communicate(connection) {
                         address: eliminations[i],
                         reason: 1
                     }
+                    if (eliminations.length == games[gameIndex].players.length) {
+                        response.reason = 2;
+                    }
                     
                     io.sockets.emit('leave', response);
                 }
@@ -243,8 +246,12 @@ function communicate(connection) {
                     
                     io.sockets.emit('end', response);
                 }
-                else {
+                else if (games[gameIndex].players.length > 1) {
                     io.sockets.emit('done', games[gameIndex].address);
+                }
+                else {
+                    games.splice(gameIndex,1);
+                    io.sockets.emit('update',games);
                 }
             }
             else {

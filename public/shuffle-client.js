@@ -1307,11 +1307,11 @@ function Player() {
                                 }
                                 else {
                                     //  +
-                                    if (!this.pieces[p].block && this.pieces[p].cardinal) {
-                                        if (!this.pieces[p].captain && this.pieces[p].diagonal) {//    take
+                                    if (!this.pieces[p].block && this.pieces[p].cardinal && !this.pieces[p].captain) {
+                                        if (this.pieces[p].diagonal) {//    take
                                             pieceTaken = true;
                                         }
-                                        else if (!this.pieces[p].diagonal) {//    stick
+                                        else {//    stick
                                             this.pieces[p].move[0] *= -1;
                                             this.pieces[p].move[1] *= -1;
                                             this.pieces[p].moved = true;
@@ -1321,11 +1321,9 @@ function Player() {
                             }
                             else {
                                 //  x
-                                if (!this.pieces[p].block) {
-                                    if (this.pieces[p].cardinal) {
-                                        if (!this.pieces[p].captain) {//    take
+                                if (!this.pieces[p].block && !this.pieces[p].captain) {
+                                    if (this.pieces[p].cardinal) {//    take
                                             pieceTaken = true;
-                                        }
                                     }
                                     else {//    stick
                                         this.pieces[p].move[0] *= -1;
@@ -1430,11 +1428,11 @@ function Player() {
                                         }
                                         else {
                                             //  +
-                                            if (!this.pieces[p].block && this.pieces[p].cardinal) {
-                                                if (!this.pieces[p].captain && this.pieces[p].diagonal) {//    take
+                                            if (!this.pieces[p].block && this.pieces[p].cardinal && !this.pieces[p].captain) {
+                                                if (this.pieces[p].diagonal) {//    take
                                                     pieceTaken = true;
                                                 }
-                                                else if (!this.diagonal) {//    stick
+                                                else {//    stick
                                                     this.pieces[p].move[0] *= -1;
                                                     this.pieces[p].move[1] *= -1;
                                                     this.pieces[p].moved = true;
@@ -1445,11 +1443,9 @@ function Player() {
                                     }
                                     else {
                                         //  x
-                                        if (!this.pieces[p].block) {
+                                        if (!this.pieces[p].block && !this.pieces[p].captain) {
                                             if (this.pieces[p].cardinal) {//    take
-                                                if (!this.pieces[p].captain) {
                                                     pieceTaken = true;
-                                                }
                                             }
                                             else {//    stick
                                                 this.pieces[p].move[0] *= -1;
@@ -1639,7 +1635,7 @@ function Piece(loc, typ, dia, car) {
                         line(0.5*diameter*0.35,-0.5*diameter*0.35,-0.5*diameter*0.35,0.5*diameter*0.35);
                         ellipseMode(CENTER);
                         strokeWeight(4);
-                        ellipse(0,0,diameter*0.25,diameter*0.25);
+                        ellipse(0,0,diameter*0.4,diameter*0.4);
                         // ©
                     }
                     else {

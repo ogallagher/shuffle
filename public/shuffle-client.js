@@ -1286,7 +1286,7 @@ function Player() {
                                     if (self.pieces[sp].captain) {
                                         //  ©
                                         if (!this.pieces[p].block) {
-                                            if (this.pieces[p].cardinal && this.pieces[p].diagonal) {//     stick
+                                            if (this.pieces[p].captain) {//     stick
                                                 this.pieces[p].move[0] *= -1;
                                                 this.pieces[p].move[1] *= -1;
                                                 this.pieces[p].moved = true;
@@ -1409,7 +1409,7 @@ function Player() {
                                             if (others[o].pieces[op].captain) {
                                                 //  ©
                                                 if (!this.pieces[p].block) {
-                                                    if (this.pieces[p].cardinal && this.pieces[p].diagonal) {//     stick
+                                                    if (this.pieces[p].captain) {//     stick
                                                         this.pieces[p].move[0] *= -1;
                                                         this.pieces[p].move[1] *= -1;
                                                         this.pieces[p].moved = true;
@@ -1498,7 +1498,7 @@ function Player() {
                         }
                     }
                 }
-                else if (!this.pieces[p].block && this.pieces[p].cardinal && this.pieces[p].diagonal) {
+                else if (!this.pieces[p].block && this.pieces[p].cardinal && this.pieces[p].diagonal && !this.pieces[p].captain) {
                     for (var sp=0; sp<self.pieces.length; sp++) {
                         if (player > -1 || sp != p) {
                             if (self.pieces[sp].location.x == this.pieces[p].location.x && self.pieces[sp].location.y == this.pieces[p].location.y && self.pieces[sp].move.join() != "0,0") {
@@ -1638,6 +1638,7 @@ function Piece(loc, typ, dia, car) {
                         line(-0.5*diameter*0.35,-0.5*diameter*0.35,0.5*diameter*0.35,0.5*diameter*0.35);
                         line(0.5*diameter*0.35,-0.5*diameter*0.35,-0.5*diameter*0.35,0.5*diameter*0.35);
                         ellipseMode(CENTER);
+                        strokeWeight(4);
                         ellipse(0,0,diameter*0.25,diameter*0.25);
                         // ©
                     }

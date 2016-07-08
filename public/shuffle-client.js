@@ -58,7 +58,7 @@ function setup() {                  //put all client responses in setup()
         addressString += digit;
     }
     self.address = int(addressString);
-    self.team = [100,0,0];
+    self.team = [0,0,100];
     
     //client = io.connect('74.71.101.15:8080');                     //Local ip on LAN over home router
     //client = io.connect('127.0.0.1:8080');                        //Localhost ip
@@ -138,7 +138,7 @@ function draw() {
             
             break;
         case 3:   //Play
-            background(0);     //This will be according to self.team
+            background(0);
             
             stay();
             board.enable();
@@ -659,13 +659,13 @@ function onGame(response) {
                 var team = [];
                 switch (t) {
                     case 0:
-                        team = [0,0,100];
+                        team = [100,0,0];
                         break;
                     case 1:
                         team = [0,100,0];
                         break;
                     case 2:
-                        team = [80,50,0];
+                        team = [100,100,0];
                         break;
                 }
                 t++;
@@ -679,7 +679,7 @@ function onGame(response) {
             }
         }
         
-        playerText.label = self.name + " (Red)\n" + others[0].name + " (Blue)\n";
+        playerText.label = self.name + " (Blue)\n" + others[0].name + " (Red)\n";
         if (others.length > 1) {
             playerText.label += others[1].name + " (Green)\n";
         }
@@ -770,17 +770,17 @@ function onLeave(response) {
                     others.splice(i,1);
                     i--;
                     
-                    playerText.label = self.name + " (Red)\n";
+                    playerText.label = self.name + " (Blue)\n";
                     for (var i=0; i<others.length; i++) {
                         playerText.label += others[i].name;
                         switch (others[i].team.join()) {
-                            case "0,0,100":
-                                playerText.label += " (Blue)";
+                            case "100,0,0":
+                                playerText.label += " (Red)";
                                 break;
                             case "0,100,0":
                                 playerText.label += " (Green)";
                                 break;
-                            case "80,50,0":
+                            case "100,100,0":
                                 playerText.label += " (Yellow)";
                                 break;
                         }

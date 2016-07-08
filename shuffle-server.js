@@ -444,7 +444,7 @@ function Game(siz) {
                 x = Math.floor(Math.random()*(this.size+2));
                 y = Math.floor(Math.random()*(this.size+2));
             }
-            this.players[p].place(x,y,true,true,true);
+            this.players[p].place(x,y,true,true,true);  // O
         
             x = Math.floor(Math.random()*(this.size+2));
             y = Math.floor(Math.random()*(this.size+2));
@@ -452,7 +452,7 @@ function Game(siz) {
                 x = Math.floor(Math.random()*(this.size+2));
                 y = Math.floor(Math.random()*(this.size+2));
             }
-            this.players[p].place(x,y,true,false,true);
+            this.players[p].place(x,y,true,false,true);  // #
         
             x = Math.floor(Math.random()*(this.size+2));
             y = Math.floor(Math.random()*(this.size+2));
@@ -460,7 +460,7 @@ function Game(siz) {
                 x = Math.floor(Math.random()*(this.size+2));
                 y = Math.floor(Math.random()*(this.size+2));
             }
-            this.players[p].place(x,y,true,true,false);
+            this.players[p].place(x,y,true,true,false);  // ∆
             
             x = Math.floor(Math.random()*(this.size+2));
             y = Math.floor(Math.random()*(this.size+2));
@@ -468,7 +468,7 @@ function Game(siz) {
                 x = Math.floor(Math.random()*(this.size+2));
                 y = Math.floor(Math.random()*(this.size+2));
             }
-            this.players[p].place(x,y,false,true,true);
+            this.players[p].place(x,y,false,true,true);  // *
             
             x = Math.floor(Math.random()*(this.size+2));
             y = Math.floor(Math.random()*(this.size+2));
@@ -476,15 +476,15 @@ function Game(siz) {
                 x = Math.floor(Math.random()*(this.size+2));
                 y = Math.floor(Math.random()*(this.size+2));
             }
-            this.players[p].place(x,y,false,false,true);
+            this.players[p].place(x,y,false,false,true);  // +
             
             x = Math.floor(Math.random()*(this.size+2));
             y = Math.floor(Math.random()*(this.size+2));
-            while (this.overlap(x,y)) {
+            while (this.overlap(x,y) || (x == 0 && (y == 0 || y == this.size+1)) || (x == this.size+1 && (y == 0 || y == this.size+1))) {
                 x = Math.floor(Math.random()*(this.size+2));
                 y = Math.floor(Math.random()*(this.size+2));
             }
-            this.players[p].place(x,y,false,true,false);
+            this.players[p].place(x,y,false,true,false);  // x
         }
     }
     

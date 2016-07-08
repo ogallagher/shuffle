@@ -13,12 +13,16 @@
 </head>
 
 <body>
-    <hr>
-    
     <h1>Shuffle</h1>
     
     <div id="subtitle">
         Author: Owen Gallagher
+    </div>
+    <div id="subtitle">
+        Begun: 29 April 2016
+    </div>
+    <div id="subtitle">
+        Last Updated: 8 July 2016
     </div>
     
     <hr>
@@ -46,17 +50,17 @@
     </div>
     
     <div id="subtitle">
-        CIRCLE: anywhere
+        <i>CIRCLE:</i> anywhere
         <div id="piece"><img src="circle.png" alt="o" /></div>
-        SQUARE: cardinal
+        <i>SQUARE:</i> cardinal
         <div id="piece"><img src="square.png" alt="#" /></div>
-        TRIANGLE: diagonal
+        <i>TRIANGLE:</i> diagonal
         <div id="piece"><img src="triangle.png" alt="∆" /></div>
-        STAR: anywhere
+        <i>STAR:</i> anywhere
         <div id="piece"><img src="*.png" alt="*" /></div>
-        PLUS: cardinal
+        <i>PLUS:</i> cardinal
         <div id="piece"><img src="+.png" alt="+" /></div>
-        EX: diagonal
+        <i>EX:</i> diagonal
         <div id="piece"><img src="x.png" alt="x" /></div>
     </div>
     <div id="text">
@@ -72,19 +76,29 @@
         The following describe collision scenarios:
     </div>
     <div id="list">
-        BLOCK: block[A]-attack[B] = B is sent back
+        <i>BLOCK:</i> block[A]-attack[B] = B is sent back.
     </div>
     <div id="list">
-        SHOVE: block[A]-block[B] = if A is slower, B is shoved. Otherwise, A is shoved
+        <i>SHOVE:</i>  block[A]-block[B] = if A is slower, B is shoved. Otherwise, A is shoved.
     </div>
     <div id="list">
-        TAKE: attack[A]-attack[B] = if A is slower, B is removed. Otherwise, A is removed
+        <i>TAKE:</i>  attack[A]-attack[B] = if A is slower, B is removed. Otherwise, A is removed.
     </div>
     <div id="list">
-        STICK: same[A]-same[B] = if A and B are the same type, both are sent back
+        <i>STICK:</i>  same[A]-same[B] = if A and B are the same type, both are sent back.
     </div>
     <div id="list">
-        SQUASH: any[A]-any[B] = if in one of the collisions above, A is sent to a space occupied by another piece B, A is removed.
+        <i>SQUASH:</i>  any[A]-any[B] = if in one of the collisions above, A is sent to a space occupied by another piece B, A is removed.
+    </div>
+    <div id="text">
+        Looking at the collision scenarios, the <i>STAR</i>  piece is definitely the worst piece on the board. However, if you take a piece (through a <i>SQUASH</i>) with the <i>STAR</i>, it can become a:
+    </div>
+    <div id="subtitle">
+        <i>CAPTAIN</i>: anywhere
+        <div id="piece"><img src="captain.png" alt="©" /></div>
+    </div>
+    <div id="text">
+        The <i>CAPTAIN</i> is the seventh piece type, which is the slowest (strongest) attack piece on the board.
     </div>
     
     <h2>End</h2>
@@ -99,7 +113,7 @@
     
     <h2>Start</h2>
     <div id="text">
-        Click on the game below to initiate it.
+        Click on the game at the bottom of this page to initiate it.
     </div>
     <div id="text">
         You will be prompted to give a name for yourself. Click on ENTER NAME and do so; then press the play button.
@@ -118,6 +132,26 @@
     </div>
     <div id="text">
         If you need to quit at any time, press the stop button in the lower right corner.
+    </div>
+    
+    <h2>Notes</h2>
+    <div id="text">
+        To see information on who is playing in your game, and to reveal the stop button, move the mouse/tap outside of the board.
+    </div>
+    <div id="text">
+        Sometimes the game is prone to sluggishness, so be patient with it...
+    </div>
+    <div id="text">
+        Try to avoid sending your <i>EX</i> or your <i>TRIANGLE</i> to the corners; once there it's easy for another player to predict how you'll move.
+    </div>
+    <div id="text">
+        Piece movement: "anywhere" means "to any adjacent space"; "cardinal" means "up, down, right, and left"; "diagonal" means "up-right, down-right, down-left, and up-left".
+    </div>
+    <div id="text">
+        Be wary of possible <i>SQUASH</i>es. You can be <i>SQUASH</i>ed by any piece, and if a <i>STAR</i> <i>SQUASH</i>es another piece, the <i>STAR</i> is converted into a <i>CAPTAIN</i>.
+    </div>
+    <div id="text">
+        Pieces that are shoved off the board are eliminated.
     </div>
     
     <hr>

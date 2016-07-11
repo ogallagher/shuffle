@@ -32,7 +32,7 @@ function communicate(connection) {
     connection.on('disconnect', function() {
                   visitors--;
                   });
-    connection.emit('visitors', visitors);
+    connection.emit('visitors', io.sockets.clients().length());
     
     connection.on('join', onJoin);
     connection.on('game', onGame);

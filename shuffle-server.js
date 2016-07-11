@@ -24,7 +24,7 @@ for (var i=0; i<20; i++) {
 
 function communicate(connection) {
     console.log("CONNECTION");
-    connection.emit('visitors', io.engine.clientsCount);
+    io.sockets.emit('visitors', Object.keys(io.sockets.connected).length);
     
     connection.on('join', onJoin);
     connection.on('game', onGame);

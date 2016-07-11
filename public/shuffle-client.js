@@ -1,4 +1,5 @@
 var canvas;
+var visitors;
 var client;
 var self;
 var others;
@@ -32,6 +33,8 @@ function setup() {                  //put all client responses in setup()
     canvas.mouseOver(over);
     canvas.mouseOut(out);
     
+    visitors = 1;
+    
     self = new Player();
     others = new Array(0);
     board = new Board();
@@ -62,6 +65,7 @@ function setup() {                  //put all client responses in setup()
     
     client = io.connect('http://shuffle-ojpgapps.rhcloud.com/');    //Address on remote server
     
+    client.on('visitors', onVisitors);
     client.on('address', onAddress);
     client.on('name', onName);
     client.on('join', onJoin);
@@ -92,6 +96,7 @@ function setup() {                  //put all client responses in setup()
 function draw() {
     switch(stage) {
         case 0:   //Not activated (smaller version)
+            document.getElementById("visitors").innerHTML = visitors;
             background(80);
             
             push();
@@ -593,6 +598,10 @@ function end() {
 }
 
 //--------------------------------------------------------------------- RESPONSES
+
+function onVisitors(population) {
+    visitors = population;
+}
 
 function onAddress(response) {
     var alert = "Your address " + self.address + " was used."

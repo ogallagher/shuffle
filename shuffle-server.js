@@ -16,6 +16,7 @@ console.log("\n>>  Server will send and communicate with shuffle-client.js.\n");
 io.sockets.on('connection', communicate);   //put all server responses in communicate()
 
 var games = new Array(0);
+var visitors = 0;
 
 for (var i=0; i<20; i++) {
     games.push(new Game(3));
@@ -24,7 +25,14 @@ for (var i=0; i<20; i++) {
 
 function communicate(connection) {
     console.log("CONNECTION");
-    connection.emit('visitors', socket.sockets.sockets.length);
+    
+    connection.on('connect', function() {
+                  visitors++;
+                  });
+    connection.on('disconnect', function() {
+                  visitors--;
+                  });
+    connection.emit('visitors', visitors);
     
     connection.on('join', onJoin);
     connection.on('game', onGame);

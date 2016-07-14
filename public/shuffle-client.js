@@ -669,7 +669,9 @@ function onVisitors(population) {
     visitors = population;
 }
 
-function onAddress(response) {
+function onAddress(response, callback) {
+    callback();
+    
     var alert = "Your address " + self.address + " was used."
     
     var addressString = "";
@@ -684,7 +686,9 @@ function onAddress(response) {
     alert(alert);
 }
 
-function onName(response) {
+function onName(response, callback) {
+    callback();
+    
     if (joining) {
         alert("Your name " + self.name + " is currently used by another player.\nPlease choose another or try again later.");
         
@@ -694,7 +698,9 @@ function onName(response) {
     }
 }
 
-function onJoin(games) {
+function onJoin(games, callback) {
+    callback();
+    
     if (joining) {
         existingGames = games;
         
@@ -711,7 +717,9 @@ function onJoin(games) {
     }
 }
 
-function onUpdate(games) {
+function onUpdate(games, callback) {
+    callback();
+    
     if (stage == 2) {
         existingGames = games;
         
@@ -753,7 +761,9 @@ function onUpdate(games) {
     }
 }
 
-function onGame(response) {
+function onGame(response, callback) {
+    callback();
+    
     if (waitingToPlay) {
         var t=0;
         
@@ -803,7 +813,9 @@ function onGame(response) {
     }
 }
 
-function onMove(response) {
+function onMove(response, callback) {
+    callback();
+    
     if (response.game == game && turn == 1) {
         for (var i=0; i<response.players.length; i++) {
             if (response.players[i].address != self.address) {
@@ -820,20 +832,26 @@ function onMove(response) {
     }
 }
 
-function onDone(gameAddress) {
+function onDone(gameAddress, callback) {
+    callback();
+    
     if (gameAddress == game && turn == 6) {
         animator = 0;
         turn = 0;
     }
 }
 
-function onEnd(response) {
+function onEnd(response, callback) {
+    callback();
+    
     if (response.game == game && response.winner == self.name && stage == 3) {
         stage = 4;
     }
 }
 
-function onLeave(response) {
+function onLeave(response, callback) {
+    callback();
+    
     if (stage > 0) {
         if (response.address == self.address || (response.game == game && response.address == -1)) {
             if (escaping) {
@@ -909,7 +927,6 @@ function onLeave(response) {
             }
         }
     }
-    //TBA
 }
 
 //--------------------------------------------------------------------- BUTTON CLASS

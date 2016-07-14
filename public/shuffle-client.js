@@ -5,13 +5,15 @@ var self;
 var others;
 var stage;
 var board;
-var buttons;    //{escape [0], 2 [1], 3 [2], 4 [3], continue [4], up [5], down [6], game1 [7], game2 [8], ...}
+var buttons;    //{escape [0], 2 [1], 3 [2], 4 [3], continue [4], up [5], down [6], chat [7], game0 [8], game1 [9], ..., game# [#+8]}
 var loadingText;
 var gameText;
 var existingGames;
 var sizeText;
 var game;
 var register;
+var chatHistory;
+var speech;
 var playerText;
 var scroll;
 var scrollTimer;
@@ -22,6 +24,7 @@ var escaping;
 var gamingSize;
 var gamingExisting;
 var waitingToPlay;
+var chatting;           // attach notif. to the chat button and to the play button (for name changing)
 var turn;
 var animator;
 
@@ -37,20 +40,29 @@ function setup() {                  //put all client responses in setup()
     
     self = new Player();
     others = new Array(0);
+    
     board = new Board();
+    
     buttons = new Array(0);
     buttons.push(new Button("-60","-60",65,"-15,-15;15,-15;15,15;-15,15")); //Escape
-    buttons.push(new Button("50","-50",60,"-15,-12;-15,-18;15,-18;15,3;-9,3;-9,12;15,12;15,18;-15,18;-15,-3;9,-3;9,-12")); //2 player
-    buttons.push(new Button("130","-50",60,"-15,-12;-15,-18;15,-18;15,18;-15,18;-15,12;9,12;9,3;-3,3;-3,-3;9,-3;9,-12")); //3 player
-    buttons.push(new Button("210","-50",60,"-15,-18;-9,-18;-9,-3;9,-3;9,-18;15,-18;15,18;9,18;9,3;-15,3")); //4 player
+    buttons.push(new Button("50","-60",60,"-15,-12;-15,-18;15,-18;15,3;-9,3;-9,12;15,12;15,18;-15,18;-15,-3;9,-3;9,-12")); //2 player
+    buttons.push(new Button("130","-60",60,"-15,-12;-15,-18;15,-18;15,18;-15,18;-15,12;9,12;9,3;-3,3;-3,-3;9,-3;9,-12")); //3 player
+    buttons.push(new Button("210","-60",60,"-15,-18;-9,-18;-9,-3;9,-3;9,-18;15,-18;15,18;9,18;9,3;-15,3")); //4 player
     buttons.push(new Button("200","55",50,"-7,-8;10,0;-7,8")); // Continue
-    buttons.push(new Button("-105","145",55,"-10,10;0,-10;10,10")); //Scroll Up
-    buttons.push(new Button("-105","-158",55,"-10,-10;0,10;10,-10")); //Scroll Down
+    buttons.push(new Button("-105","145",55,"-10,8;0,-12;10,8")); //Scroll Up
+    buttons.push(new Button("-105","-158",55,"-10,-8;0,12;10,-8")); //Scroll Down
+    buttons.push(new Button("-140","-60",65,"-17,-13;17,-13;17,12;-10,12;-10,20;-17,12")); //Chat
+    
     loadingText = new Text("-150","55",15,"Loading...");
     gameText = new Text("-355","90",18,"Pick the game you want to join.");
     sizeText = new Text("20","-100",15,"Pick the number of players in a game.");
-    register = new TextInput(20,60,15);
+    
+    register = new TextInput(20,60,15,"Enter Name",13);
+    
     playerText = new Text("20","30",30,"");
+    
+    chatHistory = new Array(0);
+    speech = new TextInput(20,50,30,"Enter Message",30);
     
     existingGames = new Array(0);
     
@@ -87,6 +99,7 @@ function setup() {                  //put all client responses in setup()
     gamingSize = false;
     gamingExisting = false;
     waitingToPlay = false;
+    chatting = false;
     turn = 0;
     animator = 0;
 }
@@ -120,10 +133,14 @@ function draw() {
             background(40);
             
             pickName();
+            if (joining || escaping) {
+                loadingText.position();
+                loadingText.display();
+            }
             escape();
             
             break;
-        case 2:     //Pick game.size or game (ability to change name still available if not in Shuffle lobby)
+        case 2:     //Pick game.size or game (name change still available if not in lobby)
             background(40);
             
             if (!gamingExisting && !gamingSize && !waitingToPlay) {
@@ -131,10 +148,11 @@ function draw() {
             }
             pickSize();
             pickGame();
-            if (gamingExisting || gamingSize || waitingToPlay) {
+            if (joining || gamingExisting || gamingSize || waitingToPlay || escaping) {
                 loadingText.position();
                 loadingText.display();
             }
+            chat();
             stay();
             escape();
             
@@ -150,7 +168,7 @@ function draw() {
                 others[i].display();
             }
             move();
-            if (turn == 1) {
+            if (turn == 1 || escaping) {
                 loadingText.position();
                 loadingText.display();
             }
@@ -159,6 +177,7 @@ function draw() {
                 playerText.position();
                 playerText.display();
             }
+            chat();
             escape();
             
             break;
@@ -169,6 +188,10 @@ function draw() {
             board.display();
             self.display();
             end();
+            if (escaping) {
+                loadingText.position();
+                loadingText.display();
+            }
             escape();
             
             break;
@@ -182,6 +205,10 @@ function draw() {
                 others[i].display();
             }
             end();
+            if (escaping) {
+                loadingText.position();
+                loadingText.display();
+            }
             escape();
         case 6:
             background(80);
@@ -193,6 +220,10 @@ function draw() {
                 others[i].display();
             }
             end();
+            if (escaping) {
+                loadingText.position();
+                loadingText.display();
+            }
             escape();
     }
 }
@@ -215,7 +246,9 @@ function pickName() {
     else if (stage == 2) {
         buttons[4].position(200,45);
     }
-    buttons[4].enable();
+    if (!chatting) {
+        buttons[4].enable();
+    }
     buttons[4].display();
     
     self.name = register.input;
@@ -232,14 +265,10 @@ function pickName() {
     }
     
     if (joining) {
-        loadingText.position();
-        loadingText.display();
-        
         var data = {
-            address: self.address,
-            name: self.name
+        address: self.address,
+        name: self.name
         }
-        
         client.emit('join', data);
     }
 }
@@ -250,7 +279,9 @@ function pickSize() {
     
     for (var b=1; b<4; b++) {
         buttons[b].position();
-        buttons[b].enable();
+        if (!chatting) {
+            buttons[b].enable();
+        }
         buttons[b].display();
     }
     
@@ -273,6 +304,7 @@ function pickSize() {
             game: -1,
             size: chosenSize
         }
+        
         client.emit('game', data);
     }
 }
@@ -327,20 +359,24 @@ function pickGame() {
     text(gamesList,0,0);
     pop();
     
-    for (var i=7+scroll; i<buttons.length && i<scroll+amountVisible+7; i++) {   //Game selection buttons
-        if (!existingGames[i-7-scroll].full) {
+    for (var i=8+scroll; i<buttons.length && i<scroll+amountVisible+8; i++) {   //Game selection buttons
+        if (!existingGames[i-8-scroll].full) {
             var x = buttons[i].anchor[0];
-            var y = str(132 + ((i-7-scroll)*37));
+            var y = str(132 + ((i-8-scroll)*37));
             
             buttons[i].position(x,y);
-            buttons[i].enable();
+            if (!chatting) {
+                buttons[i].enable();
+            }
             buttons[i].display();
         }
     }
     
     for (var b=5; b<7; b++) {   //Scroll up and down
         buttons[b].position();
-        buttons[b].enable();
+        if (!chatting) {
+            buttons[b].enable();
+        }
         buttons[b].display();
     }
     if (buttons[5].enabled) {
@@ -362,9 +398,9 @@ function pickGame() {
         buttons[6].enabled = false;
     }
     
-    for (var i=7; i<buttons.length && !gamingSize && !gamingExisting && !mouseIsPressed && !touchIsDown && !waitingToPlay; i++) {    //Action
+    for (var i=8; i<buttons.length && !gamingSize && !gamingExisting && !mouseIsPressed && !touchIsDown && !waitingToPlay; i++) {    //Action
         if (buttons[i].enabled) {
-            chosenGame = i-7;
+            chosenGame = i-8;
             board.size = existingGames[chosenGame].size+2;
             
             gamingExisting = true;
@@ -379,17 +415,46 @@ function pickGame() {
             game: existingGames[chosenGame].address,
             size: existingGames[chosenGame].size
         }
+        
         client.emit('game', data);
     }
-    else if (waitingToPlay) {
-        var data = {
-            address: self.address,
-            name: self.name,
-            game: game,
-            size: existingGames[chosenGame].size
+}
+
+function chat() {//chatting also is true if ENTER pressed
+    buttons[7].notification.label = "0";
+    
+    if (chatting) {
+        push();
+        fill(0,220);
+        noStroke();
+        rectMode(CORNER);
+        rect(0,0,width,height);
+        pop();
+        
+        speech.position();
+        speech.enable();
+        speech.display();
+    }
+    
+    if (stage < 3 || !board.touched || chatting) {
+        if (stage == 3) {
+            buttons[7].position(-140,-35);
         }
-        client.emit('game', data);
+        else {
+            buttons[7].position();
+        }
+        buttons[7].enable();
+        buttons[7].display();
+        
+        if (buttons[7].enabled) {
+            chatting = true;
+        }
+        else {
+            chatting = false;
+        }
     }
+    
+    //TBA: if(chatting){showHistory TextInput}
 }
 
 function move() {
@@ -398,7 +463,9 @@ function move() {
         
         if (self.played) {
             buttons[4].position(455,45);
-            buttons[4].enable();
+            if (!chatting) {
+                buttons[4].enable();
+            }
             buttons[4].display();
             
             if (buttons[4].enabled && (!mouseIsPressed && !touchIsDown)) {
@@ -407,11 +474,11 @@ function move() {
             }
         }
     }
-    else if (turn == 1) {   //Ask for others' moves
+    else if (turn == 1) {
         var data = {
-            address: self.address,
-            game: game,
-            move: self.pieces
+        address: self.address,
+        game: game,
+        move: self.pieces
         }
         client.emit('move', data);
     }
@@ -503,40 +570,35 @@ function finish() {
                     others[o].pieces[p].upgraded = false;
                 }
             }
-
+            
         }
         
         turn = 6;
+        
+        for (p=0; p<self.pieces.length; p++) {
+            self.pieces[p].move = [0,0];
+        }
+        for (var o=0; o<others.length; o++) {
+            for (var p=0; p<others[o].pieces.length; p++) {
+                others[o].pieces[p].move = [0,0];
+            }
+        }
     }
-    else if (turn == 6) {   //Emit DONE event
-        if (animator == 0) {
-            for (p=0; p<self.pieces.length; p++) {
-                self.pieces[p].move = [0,0];
-            }
-            for (var o=0; o<others.length; o++) {
-                for (var p=0; p<others[o].pieces.length; p++) {
-                    others[o].pieces[p].move = [0,0];
-                }
-            }
-            
-            animator++;
+    else if (turn == 6) {   //Emit DONE
+        var data = {
+        game: game,
+        address: self.address,
+        move: self.pieces
         }
-        else {
-            var data = {
-                game: game,
-                address: self.address,
-                move: self.pieces
-            }
-            client.emit('done', data);
-        }
+        client.emit('done', data);
     }
 }
 
 function stay() {
     if (game > -1) {
         var data = {
-            address: self.address,
-            game: game
+        address: self.address,
+        game: game
         }
         
         client.emit('stay', data);
@@ -545,7 +607,12 @@ function stay() {
 
 function escape() {
     if (stage != 3 || !board.touched) {
-        buttons[0].position();
+        if (stage == 3) {
+            buttons[0].position(-60,-35);
+        }
+        else {
+            buttons[0].position();
+        }
         buttons[0].enable();
         buttons[0].display();
         
@@ -557,8 +624,8 @@ function escape() {
     
     if (escaping) {
         var data = {
-            game: game,
-            address: self.address
+        game: game,
+        address: self.address
         }
         
         client.emit('leave', data);
@@ -622,7 +689,7 @@ function onName(response) {
     if (joining) {
         alert("Your name " + self.name + " is currently used by another player.\nPlease choose another or try again later.");
         
-        register.input = "Enter Name";
+        register.input = register.initial;
         joining = false;
         buttons[4].enabled = false;
     }
@@ -632,7 +699,7 @@ function onJoin(games) {
     if (joining) {
         existingGames = games;
         
-        for (var i=buttons.length-1; i>6; i--) {
+        for (var i=buttons.length-1; i>7; i--) {
             buttons.splice(i,1);
         }
         for (var i=0; i<existingGames.length; i++) {
@@ -658,7 +725,7 @@ function onUpdate(games) {
         
         waitingToPlay = false;
         
-        for (var i=buttons.length-1; i>6; i--) {
+        for (var i=buttons.length-1; i>7; i--) {
             buttons.splice(i,1);
         }
         
@@ -673,6 +740,14 @@ function onUpdate(games) {
                     gamingSize = false;
                     gamingExisting = false;
                     waitingToPlay = true;
+                    
+                    var data = {
+                    address: self.address,
+                    name: self.name,
+                    game: game,
+                    size: existingGames[chosenGame].size
+                    }
+                    client.emit('game', data,);
                 }
             }
         }
@@ -782,6 +857,8 @@ function onLeave(response) {
                 gamingSize = false;
                 gamingExisting = false;
                 waitingToPlay = false;
+                chatting = false;
+                speech = speech.initial;
                 stage = 0;
                 self.name = "";
                 self.pieces = [];
@@ -848,6 +925,7 @@ function Button(x,y,d,l) {
     this.touched = false;
     this.enabled = false;
     this.canPress = true;
+    this.notification = new Notification();
     
     this.position = function(x,y) {
         if (x != null && y != null) {
@@ -881,7 +959,7 @@ function Button(x,y,d,l) {
         var distance = new p5.Vector(mouseX,mouseY);
         distance.sub(this.location);
         
-        if (distance.mag() < this.diameter*0.5 || (stage == 3 && this.location.y > height/2 && mouseX > this.location.x && mouseY > this.location.y)) {
+        if (distance.mag() < this.diameter*0.5 || (this.location.equals(buttons[0].location) && mouseX > this.location.x && mouseY > this.location.y)) {
             this.touched = true;
         }
         else {
@@ -924,7 +1002,7 @@ function Button(x,y,d,l) {
             beginShape();
             for (var v=0; v<vertices.length; v++) {
                 var coordinates = int(split(vertices[v],","));
-
+                
                 vertex(coordinates[0]*this.scale,coordinates[1]*this.scale);
             }
             endShape(CLOSE);
@@ -938,6 +1016,29 @@ function Button(x,y,d,l) {
         }
         
         pop();
+        
+        var notif = new p5.Vector(this.diameter*0.5,this.diameter*-0.5);
+        notif.add(this.location);
+        
+        this.notification.display(notif,this.scale);
+    }
+}
+
+function Notification() {
+    this.label = "";
+    this.diameter = 10;
+    
+    this.display = function(v,s) {
+        if (this.label.length > 0) {
+            push();
+            translate(v.x,v.y);
+            noFill();
+            stroke(255);
+            strokeWeight(1.5);
+            ellipseMode(CENTER);
+            ellipse(0,0,this.diameter*s,this.diameter*s);
+            pop();
+        }
     }
 }
 
@@ -970,7 +1071,7 @@ function Text(x,y,s,l) {
         else {
             this.location.y = int(this.anchor[1]) * this.scale;
         }
-
+        
     }
     
     this.display = function() {
@@ -990,12 +1091,14 @@ function Text(x,y,s,l) {
 
 //--------------------------------------------------------------------- TEXTINPUT CLASS
 
-function TextInput(x,y,s) {
+function TextInput(x,y,s,i,m) {
     this.anchor = [x,y];
     this.location = new p5.Vector(0,0);
     this.size = s;
     this.scale = 1;
-    this.input = "Enter Name";
+    this.initial = i;
+    this.input = i;
+    this.max = m;
     this.touched = false;
     this.enabled = false;
     this.canPress = true;
@@ -1003,8 +1106,10 @@ function TextInput(x,y,s) {
     this.canType = 0;
     
     this.position = function(x,y,s) {
-        this.anchor = [x,y];
-        this.size = s;
+        if (x != null && y != null && s != null) {
+            this.anchor = [x,y];
+            this.size = s;
+        }
         
         if (width < height) {
             this.scale = width/500;
@@ -1041,7 +1146,7 @@ function TextInput(x,y,s) {
             this.canPress = false;
             
             if (touchIsDown) {
-                var p = prompt("Enter your name.", this.input);
+                var p = prompt(this.initial, this.input);
                 if (p != null) {
                     this.enabled = false;
                     if (p.length > 12) {
@@ -1053,21 +1158,21 @@ function TextInput(x,y,s) {
                 }
                 else {
                     this.enabled = false;
-                    this.input = "Enter Name";
+                    this.input = this.initial;
                 }
-            
+                
                 if (this.input.length == 0) {
-                    this.input = "Enter Name";
+                    this.input = this.initial;
                 }
             }
         }
         else if (!mouseIsPressed && !touchIsDown) {
             this.canPress = true;
         }
-        else if (!this.touched && mouseIsPressed || touchIsDown) {
+        else if (!this.touched && (mouseIsPressed || touchIsDown)) {
             this.enabled = false;
             if (this.input.length == 0) {
-                this.input = "Enter Name";
+                this.input = this.initial;
             }
         }
         
@@ -1080,11 +1185,11 @@ function TextInput(x,y,s) {
                     if (keyCode == DELETE || keyCode == BACKSPACE) {
                         this.input = this.input.substring(0,this.input.length-1);
                     }
-                    else if (key != null && keyCode != SHIFT && keyCode != CONTROL && keyCode != TAB && keyCode != ESCAPE && keyCode != OPTION && keyCode != ALT && keyCode != UP_ARROW && keyCode != DOWN_ARROW && keyCode != LEFT_ARROW && keyCode != RIGHT_ARROW && keyCode != ENTER && keyCode != RETURN && this.input.length < 13) {
-                        if (this.input == "Enter Name") {
+                    else if (key != null && keyCode != SHIFT && keyCode != CONTROL && keyCode != TAB && keyCode != ESCAPE && keyCode != OPTION && keyCode != ALT && keyCode != UP_ARROW && keyCode != DOWN_ARROW && keyCode != LEFT_ARROW && keyCode != RIGHT_ARROW && keyCode != ENTER && keyCode != RETURN) {
+                        if (this.input == this.initial) {
                             this.input = key;
                         }
-                        else {
+                        else if (this.input.length < this.max) {
                             this.input += key;
                         }
                     }
@@ -1361,7 +1466,7 @@ function Player() {
                                 //  x
                                 if (!this.pieces[p].block && !this.pieces[p].captain) {
                                     if (this.pieces[p].cardinal) {//    take
-                                            pieceTaken = true;
+                                        pieceTaken = true;
                                     }
                                     else {//    stick
                                         this.pieces[p].move[0] *= -1;
@@ -1483,7 +1588,7 @@ function Player() {
                                         //  x
                                         if (!this.pieces[p].block && !this.pieces[p].captain) {
                                             if (this.pieces[p].cardinal) {//    take
-                                                    pieceTaken = true;
+                                                pieceTaken = true;
                                             }
                                             else {//    stick
                                                 this.pieces[p].move[0] *= -1;
@@ -2027,4 +2132,3 @@ function touchEnded() {
         return false;
     }
 }
-

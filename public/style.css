@@ -57,6 +57,11 @@ hr {
     font-family: "Lucida Console", monospace;
 }
 
+#visitors {
+    color: #ccc;
+    text-decoration: none;
+}
+
 #text {
     display: block;
     max-width: 600px;

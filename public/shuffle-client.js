@@ -747,7 +747,7 @@ function onUpdate(games) {
                     game: game,
                     size: existingGames[chosenGame].size
                     }
-                    client.emit('game', data,);
+                    client.emit('game', data);
                 }
             }
         }

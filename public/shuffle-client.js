@@ -135,7 +135,7 @@ function draw() {
             background(40);
             
             pickName();
-            if (escaping) {
+            if (joining || escaping) {
                 loadingText.position();
                 loadingText.display();
             }
@@ -150,7 +150,7 @@ function draw() {
             }
             pickSize();
             pickGame();
-            if (gamingExisting || gamingSize || waitingToPlay || escaping) {
+            if (joining || gamingExisting || gamingSize || waitingToPlay || escaping) {
                 loadingText.position();
                 loadingText.display();
             }
@@ -261,20 +261,19 @@ function pickName() {
         if (self.name.length > 0 && self.name != "Enter Name") {
             joining = true;
             
+            alert("JOIN SENT");
+            
             var data = {
                 address: self.address,
                 name: self.name
             }
-            client.emit('join', data, function() {});
+            client.emit('join', data, function() {
+                        alert("JOIN RECEIVED");
+                        });
         }
         else {
             alert("Please choose a name first.");
         }
-    }
-    
-    if (joining) {
-        loadingText.position();
-        loadingText.display();
     }
 }
 
@@ -625,8 +624,10 @@ function escape() {
                 game: game,
                 address: self.address
             }
-            
-            client.emit('leave', data, function() {});
+            alert("LEAVE SENT");
+            client.emit('leave', data, function() {
+                        alert("LEAVE RECEIVED");
+                        });
         }
     }
 }

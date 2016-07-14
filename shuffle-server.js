@@ -34,7 +34,7 @@ function communicate(connection) {
     connection.on('stay', onStay);
     
     function onJoin(data, callback) {
-        callback();
+        callback(1);
         
         var addressed = false;
         var named = false;
@@ -63,7 +63,7 @@ function communicate(connection) {
     }
     
     function onGame(data, callback) {
-        callback();
+        callback(1);
         
         var gameIndex = -1;
         var foundGame = false;
@@ -176,7 +176,7 @@ function communicate(connection) {
     }
     
     function onMove(data, callback) {
-        callback();
+        callback(1);
         
         var gameIndex = -1;
         for (var i=0; i<games.length; i++) {
@@ -215,7 +215,7 @@ function communicate(connection) {
     }
     
     function onDone(data, callback) {
-        callback();
+        callback(1);
         
         var gameIndex = -1;
         for (var i=0; i<games.length; i++) {
@@ -275,7 +275,7 @@ function communicate(connection) {
     }
     
     function onLeave(data, callback) {
-        callback();
+        callback(1);
         
         var found = false;
         
@@ -352,7 +352,7 @@ function communicate(connection) {
     }
     
     function onStay(data, callback) {
-        callback();
+        callback(1);
         
         var gameIndex = -1;
         for (var i=0; i<games.length; i++) {

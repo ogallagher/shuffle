@@ -33,7 +33,9 @@ function communicate(connection) {
     connection.on('leave', onLeave);
     connection.on('stay', onStay);
     
-    function onJoin(data) {
+    function onJoin(data, callback) {
+        callback();
+        
         var addressed = false;
         var named = false;
         
@@ -60,7 +62,9 @@ function communicate(connection) {
         }
     }
     
-    function onGame(data) {
+    function onGame(data, callback) {
+        callback();
+        
         var gameIndex = -1;
         var foundGame = false;
         var inGame = -1;
@@ -171,7 +175,9 @@ function communicate(connection) {
         }
     }
     
-    function onMove(data) {
+    function onMove(data, callback) {
+        callback();
+        
         var gameIndex = -1;
         for (var i=0; i<games.length; i++) {
             if (games[i].address == data.game) {
@@ -208,7 +214,9 @@ function communicate(connection) {
         }
     }
     
-    function onDone(data) {
+    function onDone(data, callback) {
+        callback();
+        
         var gameIndex = -1;
         for (var i=0; i<games.length; i++) {
             if (games[i].address == data.game) {
@@ -266,7 +274,9 @@ function communicate(connection) {
         }
     }
     
-    function onLeave(data) {
+    function onLeave(data, callback) {
+        callback();
+        
         var found = false;
         
         var gameIndex = -1;
@@ -341,7 +351,9 @@ function communicate(connection) {
         io.sockets.emit('leave', response);
     }
     
-    function onStay(data) {
+    function onStay(data, callback) {
+        callback();
+        
         var gameIndex = -1;
         for (var i=0; i<games.length; i++) {
             if (games[i].address == data.game) {
@@ -400,26 +412,6 @@ function communicate(connection) {
                     io.sockets.emit('update',games);
                 }
             }
-//            else {
-//                for (var p=0; p<games[i].players.length; p++) {
-//                    if (games[i].players[p].age > 1200) {
-//                        console.log("Player " + games[i].players[p].name + " turned stale.");
-//                        
-//                        var response = {
-//                            game: games[i].address,
-//                            address: games[i].players[p].address,
-//                            reason: 0
-//                        }
-//                        io.sockets.emit('leave', response);
-//                        
-//                        if (games[i].players[p].age > 1300) {
-//                            games[i].players.splice(p,1);
-//                            p--;
-//                            io.sockets.emit('update',games);
-//                        }
-//                    }
-//                }
-//            }
         }
     }
 }

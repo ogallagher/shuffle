@@ -867,7 +867,7 @@ function onLeave(response) {
                 game = -1;
                 others = [];
                 turn = 0;
-                for (var i=buttons.length-1; i>6; i--) {
+                for (var i=buttons.length-1; i>7; i--) {
                     buttons.splice(i,1);
                 }
             }

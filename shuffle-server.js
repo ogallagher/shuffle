@@ -51,13 +51,13 @@ function communicate(connection) {
         }
         
         if (addressed) {
-            connection.emit('address', function() {});
+            connection.emit('address');
         }
         else if (named) {
-            connection.emit('name', function() {});
+            connection.emit('name');
         }
         else {
-            connection.emit('join', games, function() {});
+            connection.emit('join', games);
             console.log(data.name + " is a known player.");
         }
     }
@@ -115,7 +115,7 @@ function communicate(connection) {
                         game: data.game,
                         players: games[gameIndex].players
                     }
-                    io.sockets.emit('game', response, function() {});
+                    io.sockets.emit('game', response);
                 }
             }
         }
@@ -144,7 +144,7 @@ function communicate(connection) {
                         game: games[inGame].address,
                         players: games[i].players
                     }
-                    io.sockets.emit('game', response, function() {});
+                    io.sockets.emit('game', response);
                 }
                 else if (!games[i].full && inGame == -1 && games[i].size == data.size) {
                     foundGame = true;
@@ -161,7 +161,7 @@ function communicate(connection) {
         }
         
         if (newInfo) {
-            io.sockets.emit('update',games, function() {});
+            io.sockets.emit('update',games);
             
             console.log(data.name + " joined the Shuffle lobby.");
             
@@ -209,7 +209,7 @@ function communicate(connection) {
                     game: data.game,
                     players: moves
                 }
-                io.sockets.emit('move', response, function() {});
+                io.sockets.emit('move', response);
             }
         }
     }
@@ -244,7 +244,7 @@ function communicate(connection) {
                         response.reason = 2;
                     }
                     
-                    io.sockets.emit('leave', response, function() {});
+                    io.sockets.emit('leave', response);
                 }
                 
                 if (games[gameIndex].players.length == 1) {
@@ -253,14 +253,14 @@ function communicate(connection) {
                         winner: games[gameIndex].players[0].name
                     }
                     
-                    io.sockets.emit('end', response, function() {});
+                    io.sockets.emit('end', response);
                 }
                 else if (games[gameIndex].players.length > 1) {
-                    io.sockets.emit('done', games[gameIndex].address, function() {});
+                    io.sockets.emit('done', games[gameIndex].address);
                 }
                 else {
                     games.splice(gameIndex,1);
-                    io.sockets.emit('update',games, function() {});
+                    io.sockets.emit('update',games);
                 }
             }
             else {
@@ -269,7 +269,7 @@ function communicate(connection) {
                     move: games[gameIndex].players
                 }
                 
-                io.sockets.emit('move', response, function() {});
+                io.sockets.emit('move', response);
             }
         }
     }
@@ -302,12 +302,12 @@ function communicate(connection) {
                         winner: games[gameIndex].players[0].name
                     }
                     
-                    io.sockets.emit('end', response, function() {});
+                    io.sockets.emit('end', response);
                 }
                 else if (games[gameIndex].players.length == 0) {
                     games.splice(gameIndex,1);
                     
-                    io.sockets.emit('update',games, function() {});
+                    io.sockets.emit('update',games);
                 }
                 
                 console.log(data.address + " left game " + data.game);
@@ -321,7 +321,7 @@ function communicate(connection) {
                     i--;
                     found = true;
                     
-                    io.sockets.emit('update',games, function() {});
+                    io.sockets.emit('update',games);
                 }
                 else {
                     for (var p=0; p<games[i].players.length && !found; p++) {
@@ -331,7 +331,7 @@ function communicate(connection) {
                             p--;
                             found = true;
                             
-                            io.sockets.emit('update',games, function() {});
+                            io.sockets.emit('update',games);
                         }
                     }
                 }
@@ -348,7 +348,7 @@ function communicate(connection) {
             reason: 0
         }
         
-        io.sockets.emit('leave', response, function() {});
+        io.sockets.emit('leave', response);
     }
     
     function onStay(data, callback) {
@@ -382,7 +382,7 @@ function communicate(connection) {
                     address: data.address,
                     reason: 1
                 }
-                io.sockets.emit('leave', response, function() {});
+                io.sockets.emit('leave', response);
             }
         }
         else {
@@ -391,7 +391,7 @@ function communicate(connection) {
                 address: data.address,
                 reason: 0
             }
-            connection.emit('leave',response, function() {});
+            connection.emit('leave',response);
         }
         
         for (var i=0; i<games.length; i++) {
@@ -404,12 +404,12 @@ function communicate(connection) {
                     address: -1,
                     reason: 0
                 }
-                io.sockets.emit('leave', response, function() {});
+                io.sockets.emit('leave', response);
                 
                 if (games[i].age > 800) {
                     games.splice(i,1);
                     i--;
-                    io.sockets.emit('update',games, function() {});
+                    io.sockets.emit('update',games);
                 }
             }
         }

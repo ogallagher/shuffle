@@ -624,10 +624,7 @@ function escape() {
                 game: game,
                 address: self.address
             }
-            alert("LEAVE SENT");
-            client.emit('leave', data, function() {
-                        alert("LEAVE RECEIVED");
-                        });
+            client.emit('leave', data, function() {});
         }
     }
 }
@@ -670,7 +667,7 @@ function onVisitors(population) {
     visitors = population;
 }
 
-function onAddress(response, callback) {
+function onAddress(response) {
     callback();
     
     var alert = "Your address " + self.address + " was used."
@@ -687,9 +684,7 @@ function onAddress(response, callback) {
     alert(alert);
 }
 
-function onName(response, callback) {
-    callback();
-    
+function onName(response) {
     if (joining) {
         alert("Your name " + self.name + " is currently used by another player.\nPlease choose another or try again later.");
         
@@ -699,9 +694,7 @@ function onName(response, callback) {
     }
 }
 
-function onJoin(games, callback) {
-    callback();
-    
+function onJoin(games) {
     if (joining) {
         existingGames = games;
         

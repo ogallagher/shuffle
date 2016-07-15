@@ -62,7 +62,7 @@ function setup() {                  //put all client responses in setup()
     playerText = new Text("20","30",30,"");
     
     chatHistory = new Array(0);
-    speech = new TextInput(20,50,30,"Enter Message",26);
+    speech = new TextInput(10,50,30,"Enter Message",26);
     
     existingGames = new Array(0);
     
@@ -430,6 +430,8 @@ function chat() {
         rect(0,0,width,height);
         pop();
         
+        buttons[7].notification.label = "";
+        
         speech.position();                                                      //Input
         speech.enable();
         speech.display();
@@ -440,7 +442,7 @@ function chat() {
             client.emit('chat',message);
         }
         
-        buttons[4].position(-55,55);
+        buttons[4].position(-40,55);
         buttons[4].enable();
         buttons[4].display();
         if (buttons[4].enabled) {
@@ -966,6 +968,15 @@ function onLeave(response) {
 
 function onChat(message) {
     chatHistory.push(message);
+    
+    if (!chatting) {
+        if (buttons[7].notification.label.length == 0) {
+            buttons[7].notification.label = "1";
+        }
+        else {
+            buttons[7].notification.label = str(int(buttons[7].notification.label) + 1);
+        }
+    }
 }
 
 //--------------------------------------------------------------------- BUTTON CLASS
@@ -1206,8 +1217,8 @@ function TextInput(x,y,s,i,m) {
                 var p = prompt(this.initial, this.input);
                 if (p != null) {
                     this.enabled = false;
-                    if (p.length > 12) {
-                        this.input = p.substring(0,13);
+                    if (p.length > this.max) {
+                        this.input = p.substring(0,this.max);
                     }
                     else {
                         this.input = p;

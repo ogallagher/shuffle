@@ -32,6 +32,7 @@ function communicate(connection) {
     connection.on('done', onDone);
     connection.on('leave', onLeave);
     connection.on('stay', onStay);
+    connection.on('chat', onChat);
     
     function onJoin(data) {
         var addressed = false;
@@ -397,10 +398,10 @@ function communicate(connection) {
                 if (games[i].age > 800) {
                     games.splice(i,1);
                     i--;
-                    io.sockets.emit('update',games);
+                    io.sockets.emit('update', games);
                 }
             }
-//            else {
+//            else {                                                        This was used to delete players in games that have really slow connections. I took it out, for now.
 //                for (var p=0; p<games[i].players.length; p++) {
 //                    if (games[i].players[p].age > 1200) {
 //                        console.log("Player " + games[i].players[p].name + " turned stale.");
@@ -421,6 +422,10 @@ function communicate(connection) {
 //                }
 //            }
         }
+    }
+    
+    function onChat(data) {
+        io.sockets.emit('chat', data);
     }
 }
 

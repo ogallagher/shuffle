@@ -62,7 +62,7 @@ function setup() {                  //put all client responses in setup()
     playerText = new Text("20","30",30,"");
     
     chatHistory = new Array(0);
-    speech = new TextInput(20,50,30,"Enter Message",30);
+    speech = new TextInput(20,50,30,"Enter Message",26);
     
     existingGames = new Array(0);
     
@@ -87,6 +87,7 @@ function setup() {                  //put all client responses in setup()
     client.on('done', onDone);
     client.on('end', onEnd);
     client.on('leave', onLeave);
+    client.on('chat', onChat);
     
     game = -1;
     stage = 0;
@@ -420,9 +421,7 @@ function pickGame() {
     }
 }
 
-function chat() {//chatting also is true if ENTER pressed
-    buttons[7].notification.label = "0";
-    
+function chat() {
     if (chatting) {
         push();
         fill(0,220);
@@ -431,30 +430,70 @@ function chat() {//chatting also is true if ENTER pressed
         rect(0,0,width,height);
         pop();
         
-        speech.position();
+        speech.position();                                                      //Input
         speech.enable();
         speech.display();
-    }
-    
-    if (stage < 3 || !board.touched || chatting) {
-        if (stage == 3) {
-            buttons[7].position(-140,-35);
+        if (speech.input != speech.initial && speech.enabled && keyIsPressed && keyCode == ENTER || keyCode == RETURN) {
+            var message = self.name + ": " + speech.input;
+            speech.input = speech.initial;
+            
+            client.emit('chat',message);
+        }
+        
+        var scale = 1;
+        if (width < height) {
+            scale = width / 500;
         }
         else {
-            buttons[7].position();
+            scale = height / 500;
         }
-        buttons[7].enable();
-        buttons[7].display();
         
-        if (buttons[7].enabled) {
+        while(chatHistory.length > 30) {                                        //Delete old messages
+            chatHistory.splice(0,1);
+        }
+        var amountVisible = floor((height-((110+120)*scale)) / (37*scale));     //Choose what is visible
+        
+        var messages = "";                                                      //Prepare list
+        var init = 0;
+        if (chatHistory.length-1-amountVisible > 0) {
+            init = chatHistory.length-1-amountVisible;
+        }
+        for (var i=init; i<chatHistory.length; i++) {
+            messages += chatHistory[i] + "\n";
+        }
+        if (messages.length == 0) {
+            messages = "\n\nNo messages...";
+        }
+        
+        push();                                                                 //Display list
+        translate(10,110*scale);
+        fill(255);
+        noStroke();
+        textAlign(LEFT);
+        textFont("Lucida Console");
+        textSize(30*scale);
+        translate(10,30*scale);
+        text(messages,0,0);
+        pop();
+    }
+    
+    if (stage == 3) {                                                           //Chat button
+        buttons[7].position(-140,-35);
+    }
+    else {
+        buttons[7].position();
+    }
+    buttons[7].enable();
+    buttons[7].display();
+    
+    if (buttons[7].enabled) {
+        if (chatting == false) {
             chatting = true;
         }
-        else {
-            chatting = false;
-        }
     }
-    
-    //TBA: if(chatting){showHistory TextInput}
+    else if (chatting) {
+        chatting = false;
+    }
 }
 
 function move() {
@@ -606,7 +645,7 @@ function stay() {
 }
 
 function escape() {
-    if (stage != 3 || !board.touched) {
+    if (!chatting && (stage != 3 || !board.touched)) {
         if (stage == 3) {
             buttons[0].position(-60,-35);
         }
@@ -858,7 +897,7 @@ function onLeave(response) {
                 gamingExisting = false;
                 waitingToPlay = false;
                 chatting = false;
-                speech = speech.initial;
+                speech.input = speech.initial;
                 stage = 0;
                 self.name = "";
                 self.pieces = [];
@@ -910,7 +949,10 @@ function onLeave(response) {
             }
         }
     }
-    //TBA
+}
+
+function onChat(message) {
+    chatHistory.push(message);
 }
 
 //--------------------------------------------------------------------- BUTTON CLASS
@@ -1017,7 +1059,7 @@ function Button(x,y,d,l) {
         
         pop();
         
-        var notif = new p5.Vector(this.diameter*0.5,this.diameter*-0.5);
+        var notif = new p5.Vector(this.diameter*0.45,this.diameter*-0.45);
         notif.add(this.location);
         
         this.notification.display(notif,this.scale);
@@ -1026,17 +1068,19 @@ function Button(x,y,d,l) {
 
 function Notification() {
     this.label = "";
-    this.diameter = 10;
+    this.diameter = 12;
     
     this.display = function(v,s) {
         if (this.label.length > 0) {
             push();
             translate(v.x,v.y);
-            noFill();
-            stroke(255);
-            strokeWeight(1.5);
-            ellipseMode(CENTER);
-            ellipse(0,0,this.diameter*s,this.diameter*s);
+            fill(255);
+            noStroke();
+            textAlign(CENTER);
+            textFont("Lucida Console");
+            textSize(this.diameter*s);
+            text(this.label,0,0);
+
             pop();
         }
     }
@@ -1176,7 +1220,7 @@ function TextInput(x,y,s,i,m) {
             }
         }
         
-        if (!keyIsPressed || this.canType > 6 || this.preKey != key) {
+        if (!keyIsPressed || this.canType > 20 || this.preKey != key) {
             this.canType = 0;
         }
         if (this.enabled) {

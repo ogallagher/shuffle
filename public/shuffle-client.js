@@ -433,7 +433,7 @@ function chat() {
         speech.position();                                                      //Input
         speech.enable();
         speech.display();
-        if (speech.input != speech.initial && speech.enabled && keyIsPressed && keyCode == ENTER || keyCode == RETURN) {
+        if (speech.input != speech.initial && speech.enabled && keyIsPressed && (keyCode == ENTER || keyCode == RETURN)) {
             var message = self.name + ": " + speech.input;
             speech.input = speech.initial;
             

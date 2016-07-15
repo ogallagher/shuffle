@@ -249,12 +249,12 @@ function pickName() {
     }
     if (!chatting) {
         buttons[4].enable();
+        buttons[4].display();
     }
-    buttons[4].display();
     
     self.name = register.input;
     
-    if (buttons[4].enabled && (!mouseIsPressed && !touchIsDown)) {
+    if (buttons[4].enabled && (!mouseIsPressed && !touchIsDown) && !chatting) {
         buttons[4].enabled = false;
         
         if (self.name.length > 0 && self.name != "Enter Name") {
@@ -438,6 +438,20 @@ function chat() {
             speech.input = speech.initial;
             
             client.emit('chat',message);
+        }
+        
+        buttons[4].position(-55,55);
+        buttons[4].enable();
+        buttons[4].display();
+        if (buttons[4].enabled) {
+            if (!touchIsDown && !mouseIsPressed) {
+                var message = self.name + ": " + speech.input;
+                speech.input = speech.initial;
+                
+                client.emit('chat',message);
+                
+                buttons[4].enabled = false;
+            }
         }
         
         var scale = 1;

@@ -451,7 +451,7 @@ function chat() {
         while(chatHistory.length > 30) {                                        //Delete old messages
             chatHistory.splice(0,1);
         }
-        var amountVisible = floor((height-((110+120)*scale)) / (37*scale));     //Choose what is visible
+        var amountVisible = floor((height-(200*scale)) / (25*scale));     //Choose what is visible
         
         var messages = "";                                                      //Prepare list
         var init = 0;
@@ -471,8 +471,7 @@ function chat() {
         noStroke();
         textAlign(LEFT);
         textFont("Lucida Console");
-        textSize(30*scale);
-        translate(10,30*scale);
+        textSize(20*scale);
         text(messages,0,0);
         pop();
     }

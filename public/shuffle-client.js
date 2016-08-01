@@ -24,7 +24,7 @@ var escaping;
 var gamingSize;
 var gamingExisting;
 var waitingToPlay;
-var chatting;           // attach notif. to the chat button and to the play button (for name changing)
+var chatting;
 var turn;
 var animator;
 
@@ -141,15 +141,14 @@ function draw() {
             escape();
             
             break;
-        case 2:     //Pick game.size or game (name change still available if not in lobby)
+        case 2:     //Pick game.size or game
             background(40);
             
-            if (!gamingExisting && !gamingSize && !waitingToPlay) {
-                pickName();
-            }
+            register.position(20,50,15);
+            register.display();
             pickSize();
             pickGame();
-            if (joining || gamingExisting || gamingSize || waitingToPlay || escaping) {
+            if (gamingExisting || gamingSize || waitingToPlay || escaping) {
                 loadingText.position();
                 loadingText.display();
             }
@@ -232,12 +231,7 @@ function draw() {
 //--------------------------------------------------------------------- FUNCTIONS
 
 function pickName() {
-    if (stage == 1) {
-        register.position(20,250,48);
-    }
-    else if (stage == 2) {
-        register.position(20,50,15);
-    }
+    register.position(20,250,48);
     register.enable();
     register.display();
     
@@ -1790,7 +1784,7 @@ function Piece(loc, typ, dia, car) {
                 stroke(team[0]*2,team[1]*2,team[2]*2);
             }
             else {
-                stroke(team[0],team[1],team[2]);
+                stroke(team[0]*1.25,team[1]*1.25,team[2]*1.25);
             }
             strokeWeight(8);
         }
@@ -2125,7 +2119,7 @@ function mouseReleased() {
             document.getElementById("shuffle").style.height = "90%";
             resizeCanvas(windowWidth*0.9, windowHeight*0.9);
             
-            window.scrollTo(0,5000);
+            window.scrollTo(0,7000);
             
             stage = 1;
         }
@@ -2138,7 +2132,7 @@ function windowResized() {
         document.getElementById("shuffle").style.height = "90%";
         resizeCanvas(windowWidth*0.9, windowHeight*0.9);
         
-        window.scrollTo(0,5000);
+        window.scrollTo(0,7000);
     }
     else {
         document.getElementById("shuffle").style.width = "200px";
@@ -2190,7 +2184,7 @@ function touchEnded() {
             document.getElementById("shuffle").style.height = "90%";
             resizeCanvas(windowWidth*0.9, windowHeight*0.9);
             
-            window.scrollTo(0,5000);
+            window.scrollTo(0,7000);
             
             stage = 1;
         }

@@ -22,7 +22,7 @@
         Begun: 29 April 2016
     </div>
     <div id="subtitle">
-        Last Updated: 16 July 2016
+        Last Updated: 1 August 2016
     </div>
     <div id="subtitle">
         Number of current visitors: <a id="visitors" href="index.html" onclick="return false"></a>
@@ -49,22 +49,22 @@
         Every piece can move one space at a time, in directions that vary based on piece type.
     </div>
     <div id="text">
-        The six types are as follows, with the piece's movement paired with its name:
+        The 6 types are as follows, with the piece's movement paired with its name:
     </div>
     
     <div id="subtitle">
         <i>CIRCLE:</i> anywhere
-        <div id="piece"><img src="circle.png" alt="o" /></div>
+        <div id="move"><img src="images/circle.png" alt="o" /></div>
         <i>SQUARE:</i> cardinal
-        <div id="piece"><img src="square.png" alt="#" /></div>
+        <div id="piece"><img src="images/square.png" alt="#" /></div>
         <i>TRIANGLE:</i> diagonal
-        <div id="piece"><img src="triangle.png" alt="∆" /></div>
+        <div id="piece"><img src="images/triangle.png" alt="∆" /></div>
         <i>STAR:</i> anywhere
-        <div id="piece"><img src="*.png" alt="*" /></div>
+        <div id="piece"><img src="images/*.png" alt="*" /></div>
         <i>PLUS:</i> cardinal
-        <div id="piece"><img src="+.png" alt="+" /></div>
+        <div id="piece"><img src="images/+.png" alt="+" /></div>
         <i>EX:</i> diagonal
-        <div id="piece"><img src="x.png" alt="x" /></div>
+        <div id="piece"><img src="images/x.png" alt="x" /></div>
     </div>
     <div id="text">
         On a turn, EVERY player moves ALL the pieces on its team.
@@ -73,7 +73,7 @@
         Since all pieces move at the same time, there are collisions, and what happens therefore is determined by the involved pieces' types.
     </div>
     <div id="text">
-        The upper three pieces are block pieces, and the lower three are attack pieces. The pieces are listed above in order from weakest to strongest by type.
+        The upper three pieces are block pieces, and the lower three are attack pieces. The pieces are listed above in order from weakest to strongest by type. (<i>TRIANGLE</i> = strongest block; <i>EX</i> = strongest attack)
     </div>
     <div id="text">
         The following describe collision scenarios:
@@ -81,24 +81,39 @@
     <div id="list">
         <i>BLOCK:</i> block[A]-attack[B] = B is sent back.
     </div>
+    <div id="subtitle">
+        <div id="piece"><img src="images/block.gif" alt="block" height="500px" width="500px" style="border:2px solid white"/></div>
+    </div>
     <div id="list">
         <i>SHOVE:</i>  block[A]-block[B] = if A is stronger, B is shoved. Otherwise, A is shoved.
+    </div>
+    <div id="subtitle">
+        <div id="piece"><img src="images/shove.gif" alt="shove" height="500px" width="500px"/></div>
     </div>
     <div id="list">
         <i>TAKE:</i>  attack[A]-attack[B] = if A is stronger, B is removed. Otherwise, A is removed.
     </div>
+    <div id="subtitle">
+        <div id="piece"><img src="images/take.gif" alt="take" height="500px" width="500px" style="border:2px solid white"/></div>
+    </div>
     <div id="list">
         <i>STICK:</i>  same[A]-same[B] = if A and B are the same type, both are sent back.
+    </div>
+    <div id="subtitle">
+        <div id="piece"><img src="images/stick.gif" alt="stick" height="500px" width="500px"/></div>
     </div>
     <div id="list">
         <i>SQUASH:</i>  any[A]-any[B] = if in one of the collisions above, A is sent to a space occupied by another piece B, A is removed.
     </div>
+    <div id="subtitle">
+        <div id="piece"><img src="images/squash.gif" alt="squash" style="border:2px solid white" height="500px" width="500px"/></div>
+    </div>
     <div id="text">
-        Looking at the collision scenarios, the <i>STAR</i>  piece is definitely the worst piece on the board. However, if you take a piece (through a <i>SQUASH</i>) with the <i>STAR</i>, it can become a:
+        Reading the collision scenarios, the <i>STAR</i>  piece definitely seems like the worst piece on the board. However, if you take a piece (through a <i>SQUASH</i>) with the <i>STAR</i>, it can become a:
     </div>
     <div id="subtitle">
         <i>CAPTAIN</i>: anywhere
-        <div id="piece"><img src="captain.png" alt="©" /></div>
+        <div id="piece"><img src="images/captain.png" alt="©" /></div>
     </div>
     <div id="text">
         The <i>CAPTAIN</i> is the seventh piece type, which is the strongest attack piece on the board.

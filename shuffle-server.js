@@ -17,11 +17,6 @@ io.sockets.on('connection', communicate);   //put all server responses in commun
 
 var games = new Array(0);
 
-for (var i=0; i<20; i++) {
-    games.push(new Game(3));
-    games[i].addPlayer(i,i.toString());
-}
-
 function communicate(connection) {
     console.log("CONNECTION");
     io.sockets.emit('visitors', Object.keys(io.sockets.connected).length);

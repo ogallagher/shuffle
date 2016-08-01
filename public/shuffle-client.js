@@ -2119,7 +2119,7 @@ function mouseReleased() {
             document.getElementById("shuffle").style.height = "90%";
             resizeCanvas(windowWidth*0.9, windowHeight*0.9);
             
-            window.scrollTo(0,7000);
+            window.scrollTo(0,10000);
             
             stage = 1;
         }
@@ -2132,7 +2132,7 @@ function windowResized() {
         document.getElementById("shuffle").style.height = "90%";
         resizeCanvas(windowWidth*0.9, windowHeight*0.9);
         
-        window.scrollTo(0,7000);
+        window.scrollTo(0,10000);
     }
     else {
         document.getElementById("shuffle").style.width = "200px";
@@ -2184,7 +2184,7 @@ function touchEnded() {
             document.getElementById("shuffle").style.height = "90%";
             resizeCanvas(windowWidth*0.9, windowHeight*0.9);
             
-            window.scrollTo(0,7000);
+            window.scrollTo(0,10000);
             
             stage = 1;
         }

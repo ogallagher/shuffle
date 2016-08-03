@@ -99,7 +99,7 @@ function communicate(connection) {
                     }
                 }
                 
-//                if (inGame == gameIndex) {
+                if (inGame == gameIndex) {
                     foundGame = true;
                     
                     if (!games[gameIndex].initialized) {
@@ -110,7 +110,7 @@ function communicate(connection) {
                         players: games[gameIndex].players
                     }
                     io.sockets.emit('game', response);
-//                }
+                }
             }
         }
         else {

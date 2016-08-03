@@ -782,7 +782,7 @@ function onUpdate(games) {
             buttons.push(new Button("-40",y,30,"-8,0;0,-8;8,0;0,8"));
             
             for (var p=0; p<existingGames[i].players.length; p++) {
-                if (existingGames[i].players[p].address == self.address && !waitingToPlay) {
+                if (existingGames[i].players[p].address == self.address) {
                     chosenGame = i;
                     game = existingGames[i].address;
                     gamingSize = false;

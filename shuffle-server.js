@@ -106,7 +106,7 @@ function communicate(connection) {
                         games[gameIndex].initialize();
                     }
                     var response = {
-                        game: data.game,
+                        game: games[gameIndex].address,
                         players: games[gameIndex].players
                     }
                     io.sockets.emit('game', response);

@@ -27,6 +27,7 @@ var waitingToPlay;
 var chatting;
 var turn;
 var animator;
+var variable;
 
 //--------------------------------------------------------------------- SETUP
 
@@ -103,6 +104,8 @@ function setup() {                  //put all client responses in setup()
     chatting = false;
     turn = 0;
     animator = 0;
+    
+    variable = "Nothing";
 }
 
 //--------------------------------------------------------------------- DRAW
@@ -796,6 +799,8 @@ function onUpdate(games) {
                     size: existingGames[chosenGame].size
                     }
                     client.emit('game', data);
+                    
+                    variable = "Asking to play " + game;
                 }
             }
         }
@@ -804,6 +809,7 @@ function onUpdate(games) {
 
 function onGame(response) {
     if (waitingToPlay) {
+        variable = "Recieved game information at the correct time.";
         var t=0;
         
         for (var i=0; i<response.players.length; i++) {
@@ -849,6 +855,9 @@ function onGame(response) {
         if (others.length > 2) {
             playerText.label += others[2].name + " (Yellow)\n";
         }
+    }
+    else {
+        variable = "Game info received, but not waitingToPlay...";
     }
 }
 

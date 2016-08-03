@@ -126,13 +126,6 @@ function communicate(connection) {
                     
                     if (!games[gameIndex].initialized) {
                         games[gameIndex].initialize();
-                        console.log("Game: (" + games[gameIndex].address + ")");
-                        for (var i=0; i<games[gameIndex].players.length; i++) {
-                            console.log("\t" + i + ": " + games[gameIndex].players[i].name);
-                            for (var p=0; p<games[gameIndex].players[i].pieces.length; p++) {
-                                console.log("\t\t" + games[gameIndex].players[i].pieces[p].location[0] + "," + games[gameIndex].players[i].pieces[p].location[1]);
-                            }
-                        }
                     }
                     var response = {
                         game: games[inGame].address,

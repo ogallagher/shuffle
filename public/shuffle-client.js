@@ -790,13 +790,62 @@ function onUpdate(games) {
                     waitingToPlay = true;
                     
                     var data = {
-                    address: self.address,
-                    name: self.name,
-                    game: game,
-                    size: existingGames[chosenGame].size
+                        address: self.address,
+                        name: self.name,
+                        game: game,
+                        size: existingGames[chosenGame].size
                     }
                     client.emit('game', data);
                 }
+            }
+        }
+        
+        if (waitingToPlay && chosenGame > -1 && existingGames[chosenGame].players.length == existingGames[chosenGame].size) {
+            var t=0;
+            var response = existingGames[chosenGame];
+            
+            for (var i=0; i<response.players.length; i++) {
+                if (response.players[i].address == self.address) {
+                    waitingToPlay = false;
+                    game = response.game;
+                    stage = 3;
+                    
+                    for (var p=0; p<response.players[i].pieces.length; p++) {
+                        self.pieces.push(new Piece(response.players[i].pieces[p].location,response.players[i].pieces[p].block,response.players[i].pieces[p].diagonal,response.players[i].pieces[p].cardinal));
+                    }
+                }
+                else {
+                    others.push(new Player());
+                    
+                    var team = [];
+                    switch (t) {
+                        case 0:
+                            team = [100,0,0];
+                            break;
+                        case 1:
+                            team = [0,100,0];
+                            break;
+                        case 2:
+                            team = [100,100,0];
+                            break;
+                    }
+                    t++;
+                    
+                    others[others.length-1].address = response.players[i].address;
+                    others[others.length-1].name = response.players[i].name;
+                    others[others.length-1].team = team;
+                    for (var p=0; p<response.players[i].pieces.length; p++) {
+                        others[others.length-1].pieces.push(new Piece(response.players[i].pieces[p].location,response.players[i].pieces[p].block,response.players[i].pieces[p].diagonal,response.players[i].pieces[p].cardinal));
+                    }
+                }
+            }
+            
+            playerText.label = self.name + " (Blue)\n" + others[0].name + " (Red)\n";
+            if (others.length > 1) {
+                playerText.label += others[1].name + " (Green)\n";
+            }
+            if (others.length > 2) {
+                playerText.label += others[2].name + " (Yellow)\n";
             }
         }
     }

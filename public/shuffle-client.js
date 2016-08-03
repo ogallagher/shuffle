@@ -192,6 +192,7 @@ function draw() {
                 loadingText.position();
                 loadingText.display();
             }
+            chatting = false;
             escape();
             
             break;
@@ -209,6 +210,7 @@ function draw() {
                 loadingText.position();
                 loadingText.display();
             }
+            chatting = false;
             escape();
         case 6:
             background(80);
@@ -224,6 +226,7 @@ function draw() {
                 loadingText.position();
                 loadingText.display();
             }
+            chatting = false;
             escape();
     }
 }

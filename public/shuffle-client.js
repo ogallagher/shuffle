@@ -24,6 +24,7 @@ var escaping;
 var gamingSize;
 var gamingExisting;
 var waitingToPlay;
+var patience;
 var chatting;
 var turn;
 var animator;
@@ -100,6 +101,7 @@ function setup() {                  //put all client responses in setup()
     gamingSize = false;
     gamingExisting = false;
     waitingToPlay = false;
+    patience = 50;
     chatting = false;
     turn = 0;
     animator = 0;
@@ -150,6 +152,21 @@ function draw() {
             if (gamingExisting || gamingSize || waitingToPlay || escaping) {
                 loadingText.position();
                 loadingText.display();
+                
+                if (patience > 0) {
+                    patience--;
+                }
+                else if (game > -1 && chosenGame > -1) {
+                    var data = {
+                        address: self.address,
+                        name: self.name,
+                        game: game,
+                        size: existingGames[chosenGame].size
+                    }
+                    client.emit('game', data);
+                    
+                    patience = 50;
+                }
             }
             chat();
             stay();

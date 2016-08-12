@@ -117,7 +117,6 @@ function draw() {
             noStroke();
             fill(255,80);
             translate(width/2,height/2);
-            var title = "Play";
             textFont("Lucida Console");
             textSize(48);
             
@@ -126,7 +125,7 @@ function draw() {
             
             textAlign(CENTER);
             fill(0);
-            text(title,0,15);
+            text("Play",0,15);
             pop();
             
             break;
@@ -526,10 +525,24 @@ function move() {
         }
     }
     else if (turn == 1) {
+        var newPieces = [];
+        for (var i=0; i<self.pieces.length; i++) {
+            var info = {
+                location: self.pieces[i].location,
+                block: self.pieces[i].block,
+                diagonal: self.pieces[i].diagonal,
+                cardinal: self.pieces[i].cardinal,
+                move: self.pieces[i].move,
+                captain: self.pieces[i].captain
+            }
+            
+            newPieces.push(info);
+        }
+        
         var data = {
-        address: self.address,
-        game: game,
-        move: self.pieces
+            address: self.address,
+            game: game,
+            move: newPieces
         }
         client.emit('move', data);
     }
@@ -675,8 +688,8 @@ function escape() {
     
     if (escaping) {
         var data = {
-        game: game,
-        address: self.address
+            address: self.address,
+            game: game
         }
         
         client.emit('leave', data);
@@ -698,7 +711,7 @@ function end() {
         endText = "You won the game!";
     }
     else if (stage == 5) {
-        endText = "Game Over... 4 U.";
+        endText = "You Lost.";
     }
     else if (stage == 6) {
         endText = "Tie Game!";
@@ -792,13 +805,15 @@ function onUpdate(games) {
                     gamingExisting = false;
                     waitingToPlay = true;
                     
-                    var data = {
-                        address: self.address,
-                        name: self.name,
-                        game: game,
-                        size: existingGames[chosenGame].size
+                    if (existingGames[i].full) {
+                        var data = {
+                            address: self.address,
+                            name: self.name,
+                            game: game,
+                            size: existingGames[chosenGame].size
+                        }
+                        client.emit('game', data);
                     }
-                    client.emit('game', data);
                 }
             }
         }

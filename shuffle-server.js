@@ -10,15 +10,11 @@ var server = app.listen(port,ip);   //settings for listening on the openshift se
 app.use(express.static('public'));
 var io = socket(server);
 
-console.log("\n\n>>  http://shuffle-ojpgapps.rhcloud.com/");
-console.log("\n>>  Server will send and communicate with shuffle-client.js.\n");
-
 io.sockets.on('connection', communicate);   //put all server responses in communicate()
 
 var games = new Array(0);
 
 function communicate(connection) {
-    console.log("CONNECTION");
     io.sockets.emit('visitors', Object.keys(io.sockets.connected).length);
     
     connection.on('join', onJoin);
@@ -52,7 +48,6 @@ function communicate(connection) {
         }
         else {
             connection.emit('join', games);
-            console.log(data.name + " is a known player.");
         }
     }
     
@@ -78,9 +73,6 @@ function communicate(connection) {
                 
                 if (inGame == -1) {
                     games[gameIndex].addPlayer(data.address,data.name);
-                    foundGame = true;
-                    inGame = gameIndex;
-                    newInfo = true;
                     
                     if (games[gameIndex].full) {
                         games[gameIndex].initialize();
@@ -91,6 +83,10 @@ function communicate(connection) {
                         io.sockets.emit('game', response);
                     }
                 }
+                
+                foundGame = true;
+                inGame = gameIndex;
+                newInfo = true;
             }
             else {
                 for (var p=0; p<games[gameIndex].players.length; p++) {
@@ -138,6 +134,17 @@ function communicate(connection) {
                     inGame = i;
                     games[i].addPlayer(data.address,data.name);
                     newInfo = true;
+                    
+                    if (games[i].full) {
+                        if (!games[i].initialized) {
+                            games[i].initialize();
+                        }
+                        var response = {
+                            game: games[gameIndex].address,
+                            players: games[gameIndex].players
+                        }
+                        io.sockets.emit('game', response);
+                    }
                 }
             }
             if (!foundGame && inGame == -1 && data.size > 1) {
@@ -149,16 +156,6 @@ function communicate(connection) {
         
         if (newInfo) {
             io.sockets.emit('update',games);
-            
-            console.log(data.name + " joined the Shuffle lobby.");
-            
-            console.log("Games: (" + games.length + ")");
-            for (var i=0; i<games.length; i++) {
-                console.log("\t" + i + ": " + games[i].full + " (" + games[i].players.length + "/" + games[i].size + ")");
-                for (var p=0; p<games[i].players.length; p++) {
-                    console.log("\t\t" + games[i].players[p].name + " [" + games[i].players[p].address + "]");
-                }
-            }
         }
     }
     
@@ -173,13 +170,10 @@ function communicate(connection) {
         if (gameIndex > -1) {
             for (var p=0; p<games[gameIndex].players.length; p++) {
                 if (games[gameIndex].players[p].address == data.address) {
-                    console.log(games[gameIndex].players[p].name + " moved.");
-                    games[gameIndex].players[p].move(data.move);                                                                     //Move pieces initially
+                    games[gameIndex].players[p].move(data.move);  //Move pieces initially
                 }
             }
             if (games[gameIndex].turnStart()) {
-                console.log("turnStart for game " + games[gameIndex].address);
-                
                 var moves = [];
                 for (var i=0; i<games[gameIndex].players.length; i++) {
                     var player = {
@@ -210,7 +204,7 @@ function communicate(connection) {
         if (gameIndex > -1) {
             for (var p=0; p<games[gameIndex].players.length; p++) {
                 if (games[gameIndex].players[p].address == data.address && games[gameIndex].players[p].ready) {
-                    games[gameIndex].players[p].move(data.move);                                                    //Move pieces after analysis
+                    games[gameIndex].players[p].move(data.move); //Move pieces after analysis
                     games[gameIndex].players[p].ready = false;
                 }
             }
@@ -290,14 +284,11 @@ function communicate(connection) {
                     
                     io.sockets.emit('update',games);
                 }
-                
-                console.log(data.address + " left game " + data.game);
             }
         }
         else {
             for (var i=0; i<games.length && !found; i++) {
                 if (games[i].players.length == 1 && games[i].players[0].address == data.address) {
-                    console.log(games[i].players[0].name + " left the Shuffle lobby.");
                     games.splice(i,1);
                     i--;
                     found = true;
@@ -307,7 +298,6 @@ function communicate(connection) {
                 else {
                     for (var p=0; p<games[i].players.length && !found; p++) {
                         if (games[i].players[p].address == data.address) {
-                            console.log(games[i].players[p].name + " left the Shuffle lobby.");
                             games[i].players.splice(p,1);
                             p--;
                             found = true;
@@ -317,10 +307,6 @@ function communicate(connection) {
                     }
                 }
             }
-        }
-        
-        if (!found) {
-            console.log("Client @" + data.address + " left without joining.");
         }
         
         var response = {
@@ -339,9 +325,9 @@ function communicate(connection) {
                 gameIndex = i;
             }
         }
-        games[gameIndex].age = 0;
         
         if (gameIndex > -1) {
+            games[gameIndex].age = 0;
             var inGame = false;
             
             for (var p=0; p<games[gameIndex].players.length; p++) {
@@ -355,7 +341,6 @@ function communicate(connection) {
             }
             
             if (!inGame) {
-                console.log("Player @" + data.address + " is dead.");
                 var response = {
                     game: data.game,
                     address: data.address,
@@ -377,7 +362,6 @@ function communicate(connection) {
             games[i].age++;
             
             if ((games[i].players.length == 1 && games[i].players[0].age > 600) || games[i].age > 700) {
-                console.log("Game " + games[i].address + " turned stale.");
                 var response = {
                     game: games[i].address,
                     address: -1,
@@ -391,26 +375,6 @@ function communicate(connection) {
                     io.sockets.emit('update', games);
                 }
             }
-//            else {                                                        This was used to delete players in games that have really slow connections. I took it out, for now.
-//                for (var p=0; p<games[i].players.length; p++) {
-//                    if (games[i].players[p].age > 1200) {
-//                        console.log("Player " + games[i].players[p].name + " turned stale.");
-//                        
-//                        var response = {
-//                            game: games[i].address,
-//                            address: games[i].players[p].address,
-//                            reason: 0
-//                        }
-//                        io.sockets.emit('leave', response);
-//                        
-//                        if (games[i].players[p].age > 1300) {
-//                            games[i].players.splice(p,1);
-//                            p--;
-//                            io.sockets.emit('update',games);
-//                        }
-//                    }
-//                }
-//            }
         }
     }
     

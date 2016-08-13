@@ -120,11 +120,11 @@ function communicate(connection) {
                 if (games[i].full && inGame == i) {
                     foundGame = true;
                     
-                    if (!games[gameIndex].initialized) {
-                        games[gameIndex].initialize();
+                    if (!games[i].initialized) {
+                        games[i].initialize();
                     }
                     var response = {
-                        game: games[inGame].address,
+                        game: games[i].address,
                         players: games[i].players
                     }
                     io.sockets.emit('game', response);
@@ -140,8 +140,8 @@ function communicate(connection) {
                             games[i].initialize();
                         }
                         var response = {
-                            game: games[gameIndex].address,
-                            players: games[gameIndex].players
+                            game: games[i].address,
+                            players: games[i].players
                         }
                         io.sockets.emit('game', response);
                     }

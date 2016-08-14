@@ -117,17 +117,22 @@ function communicate(connection) {
                     }
                 }
                 
-                if (games[i].full && inGame == i) {
+                if (inGame == i) {
                     foundGame = true;
                     
-                    if (!games[i].initialized) {
-                        games[i].initialize();
+                    if (games[i].full) {
+                        if (!games[i].initialized) {
+                            games[i].initialize();
+                        }
+                        var response = {
+                            game: games[i].address,
+                            players: games[i].players
+                        }
+                        io.sockets.emit('game', response);
                     }
-                    var response = {
-                        game: games[i].address,
-                        players: games[i].players
+                    else {
+                        newInfo = true;
                     }
-                    io.sockets.emit('game', response);
                 }
                 else if (!games[i].full && inGame == -1 && games[i].size == data.size) {
                     foundGame = true;

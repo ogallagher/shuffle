@@ -838,7 +838,7 @@ function onUpdate(games) {
 }
 
 function onGame(response) {
-    if (waitingToPlay) {
+    if (waitingToPlay && response.game == game) {
         var t=0;
         
         for (var i=0; i<response.players.length; i++) {

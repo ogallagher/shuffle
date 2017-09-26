@@ -4,7 +4,7 @@
   "description": "The server will send the client browser a webpage index.html file. The webpage will contain the shuffle-client.js sketch. The sketch will then independently connect back to the server and continue from there.",
   "main": "shuffle-server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "node shuffle-server.js"
   },
   "author": "Owen Gallagher",
   "license": "ISC",

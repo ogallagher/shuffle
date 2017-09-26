@@ -76,7 +76,7 @@ function setup() {                  //put all client responses in setup()
     self.address = int(addressString);
     self.team = [0,0,100];
     
-    client = io.connect('http://shuffle-ojpgapps.rhcloud.com/');    //Address on remote server
+    client = io.connect('http://shuffle-shuffle.193b.starter-ca-central-1.openshiftapps.com/');    //Address on remote server
     
     client.on('visitors', onVisitors);
     client.on('address', onAddress);
